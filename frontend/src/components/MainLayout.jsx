@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
-import './MainLayout.css';
+import React, { useState } from "react";
+import "./MainLayout.css";
+import Dashboard from "../pages/Dashboard";
 
 const MainLayout = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const menuItems = [
-    { id: 'dashboard', label: 'Дашборд' },
-    { id: 'operations', label: 'Операции' },
-    { id: 'reports', label: 'Отчеты' },
-    { id: 'references', label: 'Справочники' },
-    { id: 'settings', label: 'Настройки' }
+    { id: "dashboard", label: "Дашборд" },
+    { id: "operations", label: "Операции" },
+    { id: "reports", label: "Отчеты" },
+    { id: "references", label: "Справочники" },
+    { id: "settings", label: "Настройки" },
   ];
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <div className="placeholder">Страница дашборда</div>;
-      case 'operations':
+      case "dashboard":
+        return <Dashboard />;
+      case "operations":
         return <div className="placeholder">Страница операций</div>;
-      case 'reports':
+      case "reports":
         return <div className="placeholder">Страница отчетов</div>;
-      case 'references':
+      case "references":
         return <div className="placeholder">Страница справочников</div>;
-      case 'settings':
+      case "settings":
         return <div className="placeholder">Страница настроек</div>;
       default:
-        // return <Dashboard />;
+      // return <Dashboard />;
     }
   };
 
@@ -36,10 +37,10 @@ const MainLayout = () => {
           <span>Финансовый менеджер</span>
         </div>
         <nav className="side-nav">
-          {menuItems.map(item => (
+          {menuItems.map((item) => (
             <button
               key={item.id}
-              className={`nav-button ${activeTab === item.id ? 'active' : ''}`}
+              className={`nav-button ${activeTab === item.id ? "active" : ""}`}
               onClick={() => setActiveTab(item.id)}
             >
               {item.label}
@@ -49,17 +50,17 @@ const MainLayout = () => {
       </aside>
       <div className="content-wrapper">
         <header className="main-header">
-          <h1 className="page-title">{menuItems.find(item => item.id === activeTab)?.label}</h1>
+          <h1 className="page-title">
+            {menuItems.find((item) => item.id === activeTab)?.label}
+          </h1>
           <button className="logout-button">
             <span>Выйти</span>
           </button>
         </header>
-        <main className="main-content">
-          {renderContent()}
-        </main>
+        <main className="main-content">{renderContent()}</main>
       </div>
     </div>
   );
 };
 
-export default MainLayout; 
+export default MainLayout;

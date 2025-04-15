@@ -3,6 +3,8 @@ import './App.css';
 import MainLayout from './components/MainLayout';
 
 function App() {
+  console.log("App loaded");
+
   return (
     <div className="App">
       <MainLayout />
