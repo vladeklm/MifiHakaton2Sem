@@ -8,7 +8,7 @@
         <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>app.structura</groupId>
+    <groupId>it.globus</groupId>
     <artifactId>finaudit</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>finaudit</name>
@@ -68,10 +68,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>3.0.4</version>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>7.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-pdf</artifactId>
+            <version>7.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>7.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -102,5 +113,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
