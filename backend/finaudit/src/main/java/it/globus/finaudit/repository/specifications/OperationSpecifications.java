@@ -1,10 +1,6 @@
 package it.globus.finaudit.repository.specifications;
 
 import it.globus.finaudit.entity.Operation;
-import it.globus.finaudit.entity.OperationCategory;
-import it.globus.finaudit.entity.OperationStatus;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -31,8 +27,7 @@ public class OperationSpecifications {
     public static Specification<Operation> equalStatus(String status) {
         return (root, query, criteriaBuilder) -> {
             if (status == null) return null;
-            Join<Operation, OperationStatus> statusJoin = root.join("operationStatus", JoinType.INNER);
-            return criteriaBuilder.equal(statusJoin.get("name"), status);
+            return criteriaBuilder.equal(root.get("operationStatus").get("name"), status);
         };
     }
 
@@ -57,8 +52,14 @@ public class OperationSpecifications {
     public static Specification<Operation> equalOperationCategory(String operationCategory) {
         return (root, query, criteriaBuilder) -> {
             if (operationCategory == null) return null;
-            Join<Operation, OperationCategory> operationCategoryJoin = root.join("operationCategory", JoinType.INNER);
-            return criteriaBuilder.equal(operationCategoryJoin.get("name"), operationCategory);
+            return criteriaBuilder.equal(root.get("operationCategory").get("name"), operationCategory);
+        };
+    }
+
+    public static Specification<Operation> equalOperationType(String operationType) {
+        return (root, query, criteriaBuilder) -> {
+            if (operationType == null) return null;
+            return criteriaBuilder.equal(root.get("operationType").get("name"), operationType);
         };
     }
 

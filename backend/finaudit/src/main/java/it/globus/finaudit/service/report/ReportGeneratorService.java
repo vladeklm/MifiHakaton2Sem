@@ -16,8 +16,7 @@ public class ReportGeneratorService {
     }
 
     public byte[] generateOperationReport(String type, OperationFilter filter) {
-        Specification<Operation> spec = OperationSpecificationBuilder.buildFromFilter(filter);
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateOperationReport(spec);
+        return reportGenerator.generateOperationReport(filter);
     }
 }

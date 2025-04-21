@@ -1,11 +1,10 @@
 package it.globus.finaudit.service.report;
 
-import it.globus.finaudit.entity.Operation;
-import org.springframework.data.jpa.domain.Specification;
+import it.globus.finaudit.DTO.OperationFilter;
 
 public interface ReportGenerator {
 
 
-    byte[] generateOperationReport(Specification<Operation> criteria);
+    byte[] generateOperationReport(OperationFilter filter);
 
 }

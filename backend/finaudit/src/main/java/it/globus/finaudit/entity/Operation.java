@@ -17,6 +17,15 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "Operation.withAssociations",
+        attributeNodes = {
+                @NamedAttributeNode("operationType"),
+                @NamedAttributeNode("operationCategory"),
+                @NamedAttributeNode("operationStatus"),
+                @NamedAttributeNode("clientType")
+        }
+)
 @Entity
 @Table(name = "operations")
 public class Operation {
@@ -25,7 +34,7 @@ public class Operation {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 

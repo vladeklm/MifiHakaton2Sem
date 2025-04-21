@@ -37,6 +37,10 @@ public class OperationSpecificationBuilder {
             spec = spec.and(OperationSpecifications.equalInn(filter.getInn()));
         }
 
+        if (filter.getOperationType() != null) {
+            spec = spec.and(OperationSpecifications.equalOperationType(filter.getOperationType()));
+        }
+
         // Обработка amount
         if (filter.getMinAmount() != null || filter.getMaxAmount() != null) {
             spec = spec.and(OperationSpecifications.amountFilter(

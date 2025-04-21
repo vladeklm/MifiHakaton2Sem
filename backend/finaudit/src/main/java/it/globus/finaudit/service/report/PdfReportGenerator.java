@@ -1,10 +1,12 @@
 package it.globus.finaudit.service.report;
 
 
+import it.globus.finaudit.DTO.OperationFilter;
 import it.globus.finaudit.DTO.report.OperationForJasper;
 import it.globus.finaudit.entity.Operation;
 import it.globus.finaudit.repository.OperationRepository;
 
+import it.globus.finaudit.repository.specifications.OperationSpecificationBuilder;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,15 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
 public class PdfReportGenerator implements ReportGenerator {
     private final OperationRepository operationRepository;
+    DateTimeFormatter formatterForFileName = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+    DateTimeFormatter formatterDateAndTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    DateTimeFormatter formatterDate= DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 
     public PdfReportGenerator(OperationRepository operationRepository) {
@@ -33,8 +35,9 @@ public class PdfReportGenerator implements ReportGenerator {
     }
 
     @Transactional(readOnly = true)
-    public byte[] generateOperationReport(Specification<Operation> criteria) {
+    public byte[] generateOperationReport(OperationFilter filter) {
         // 1. Получаем данные
+        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilter(filter);
         List<Operation> operations = operationRepository.findAll(criteria);
         if (operations.isEmpty()) {
             throw new RuntimeException("No data found for report");
@@ -50,7 +53,7 @@ public class PdfReportGenerator implements ReportGenerator {
         }
 
         String fileName = "reports/operations_report_" +
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+                LocalDateTime.now().format(formatterForFileName) + ".pdf";
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
@@ -59,12 +62,12 @@ public class PdfReportGenerator implements ReportGenerator {
 
             // 4. Подготовка данных
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(operationForJasper);
-
             // 5. Параметры отчета
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("REPORT_TITLE", "Отчет по операциям"); // Кириллический текст
             parameters.put("GENERATION_DATE",
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+                    LocalDateTime.now().format(formatterDateAndTime));
+            parameters.put("OPERATION_FILTER", getFilterDisplay(filter));
 
             // 6. Генерация отчета
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
@@ -105,5 +108,19 @@ public class PdfReportGenerator implements ReportGenerator {
         return operationsForJasper;
     }
 
-
+    private String getFilterDisplay(OperationFilter filter) {
+        StringBuilder sb = new StringBuilder("Примененные фильтры:\n");
+        if (filter.getBankFromId() != null) sb.append("Банк отправитель: ").append(filter.getBankFromId()).append("\n");
+        if (filter.getBankToId() != null) sb.append("Банк получатель: ").append(filter.getBankToId()).append("\n");
+        if (filter.getDateFrom() != null)
+            sb.append("Дата с: ").append(formatterDate.format(filter.getDateFrom())).append("\n");
+        if (filter.getDateTo() != null) sb.append("Дата по: ").append(formatterDate.format(filter.getDateTo())).append("\n");
+        if (filter.getStatus() != null) sb.append("Статус: ").append(filter.getStatus()).append("\n");
+        if (filter.getInn() != null) sb.append("ИНН: ").append(filter.getInn()).append("\n");
+        if (filter.getMinAmount() != null) sb.append("Мин. сумма: ").append(filter.getMinAmount()).append("\n");
+        if (filter.getMaxAmount() != null) sb.append("Макс. сумма: ").append(filter.getMaxAmount()).append("\n");
+        if (filter.getOperationType() != null) sb.append("Тип операции: ").append(filter.getOperationType()).append("\n");
+        if (filter.getOperationCategory() != null) sb.append("Категория: ").append(filter.getOperationCategory()).append("\n");
+        return sb.toString();
+    }
 }
