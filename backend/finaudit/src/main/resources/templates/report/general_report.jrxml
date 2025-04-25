@@ -1,6 +1,14 @@
 <!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
 <jasperReport name="OperationsReport" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7be720fd-87ef-4e3a-99e8-e1ebe9ba4801">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<dataset name="filterOperation" uuid="529aca13-9978-45ab-b40d-dd29d07ec704">
+		<query language="sql"><![CDATA[]]></query>
+	</dataset>
+	<dataset name="CountOperation" uuid="692f5990-c3fe-47a2-8e9c-e2410e45cb5a">
+		<query language="sql"><![CDATA[]]></query>
+		<field name="count" class="java.lang.Integer"/>
+		<field name="numberDay" class="java.lang.String"/>
+	</dataset>
 	<parameter name="REPORT_TITLE" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Отчет"]]></defaultValueExpression>
 	</parameter>
@@ -8,6 +16,7 @@
 		<defaultValueExpression><![CDATA["11.02.02"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="OPERATION_FILTER" class="java.lang.String"/>
+	<parameter name="COUNT_OPERATION" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<field name="id" class="java.lang.Long"/>
 	<field name="operationType" class="java.lang.String"/>
 	<field name="operationCategory" class="java.lang.String"/>
@@ -23,7 +32,7 @@
 		</element>
 		<element kind="textField" uuid="9331afe1-e63e-49a0-9ac8-d2e5f0676869" x="0" y="60" width="802" height="31" fontName="Arial" textAdjust="StretchHeight" hTextAlign="Left">
 			<expression><![CDATA[$P{OPERATION_FILTER}]]></expression>
-			<box leftPadding="6"/>
+			<box leftPadding="0"/>
 		</element>
 		<property name="com.jaspersoft.studio.unit.height" value="px"/>
 	</title>
@@ -84,8 +93,8 @@
 		</element>
 	</columnHeader>
 	<detail>
-		<band height="25">
-			<element kind="textField" uuid="7077ad15-3005-4f09-9db7-e5cf02527812" x="0" y="0" width="50" height="25" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+		<band height="28">
+			<element kind="textField" uuid="7077ad15-3005-4f09-9db7-e5cf02527812" x="0" y="0" width="50" height="28" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
 				<expression><![CDATA[$F{id}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -94,7 +103,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="textField" uuid="73127c93-3f99-4b5f-b302-49eb4d3cb86d" x="50" y="0" width="150" height="25" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<element kind="textField" uuid="73127c93-3f99-4b5f-b302-49eb4d3cb86d" x="50" y="0" width="150" height="28" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
 				<expression><![CDATA[$F{operationType}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -103,7 +112,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="textField" uuid="3a9af124-3e28-44ee-a63b-a97a0d469171" x="200" y="0" width="150" height="25" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<element kind="textField" uuid="3a9af124-3e28-44ee-a63b-a97a0d469171" x="200" y="0" width="150" height="28" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
 				<expression><![CDATA[$F{operationCategory}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -112,7 +121,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="textField" uuid="3b276bef-406b-45e4-8283-39eff8dd3d6e" x="350" y="0" width="100" height="25" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<element kind="textField" uuid="3b276bef-406b-45e4-8283-39eff8dd3d6e" x="350" y="0" width="100" height="28" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
 				<expression><![CDATA[$F{operationStatus}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -121,7 +130,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="textField" uuid="3ad48d75-af4e-444c-8bfe-c9ddb53ebb94" x="450" y="0" width="100" height="25" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<element kind="textField" uuid="3ad48d75-af4e-444c-8bfe-c9ddb53ebb94" x="450" y="0" width="100" height="28" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
 				<expression><![CDATA[$F{amount}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -130,7 +139,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="textField" uuid="501b6221-b950-45b5-be81-c0da0b5aa5fc" x="550" y="0" width="252" height="25" fontName="Arial" fontSize="10.0" linkType="None" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
+			<element kind="textField" uuid="501b6221-b950-45b5-be81-c0da0b5aa5fc" x="550" y="0" width="252" height="28" fontName="Arial" fontSize="10.0" linkType="None" linkTarget="Self" blankWhenNull="true" vTextAlign="Middle">
 				<expression><![CDATA[$F{comment}]]></expression>
 				<box padding="4">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -139,10 +148,11 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 		</band>
 	</detail>
 	<pageFooter height="30">
-		<element kind="textField" uuid="0f0ac48c-6118-481b-b452-1413423fc055" x="702" y="0" width="100" height="20" fontName="Arial" fontSize="10.0" hTextAlign="Right">
+		<element kind="textField" uuid="0f0ac48c-6118-481b-b452-1413423fc055" x="700" y="0" width="100" height="20" fontName="Arial" fontSize="10.0" hTextAlign="Right" vTextAlign="Middle">
 			<expression><![CDATA["Страница " + $V{PAGE_NUMBER} ]]></expression>
 		</element>
 	</pageFooter>
