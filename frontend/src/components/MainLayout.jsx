@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./MainLayout.css";
 import Dashboard from "../pages/Dashboard";
+import Operations from "./operations/Operations";
 
 const MainLayout = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -18,7 +19,7 @@ const MainLayout = () => {
       case "dashboard":
         return <Dashboard />;
       case "operations":
-        return <div className="placeholder">Страница операций</div>;
+        return <Operations />
       case "reports":
         return <div className="placeholder">Страница отчетов</div>;
       case "references":
