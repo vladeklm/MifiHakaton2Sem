@@ -26,7 +26,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8084:84"
+      - "8080:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./scripts/pgadmin/servers.json:/pgadmin4/servers.json
