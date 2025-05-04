@@ -1,26 +1,19 @@
-package it.globus.finaudit.controller.transactions;
+package it.globus.finaudit.controller.operations;
 
 import it.globus.finaudit.DTO.OperationDto;
-import it.globus.finaudit.DTO.OperationFilter;
-import it.globus.finaudit.DTO.OperationMapper;
 import it.globus.finaudit.entity.Operation;
-import it.globus.finaudit.service.transactions.OperationService;
+import it.globus.finaudit.service.operations.OperationService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("api/v1/transactions")
+@RequestMapping("api/v1/operations")
 @RequiredArgsConstructor
 public class OperationController {
 

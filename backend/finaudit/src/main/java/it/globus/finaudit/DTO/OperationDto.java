@@ -31,9 +31,9 @@ public class OperationDto {
 
     private Long bankRecipientAccountId;
 
-    private Long bankAccountId;  // Исправлено на Long
+    private Long bankAccountId;
 
-    private String clientTypeName; // Должно быть String, если ты маппируешь name
+    private String clientTypeName;
 
     @Size(max = 50, message = "Status must be less than 50 characters")
     private String operationStatusName;
