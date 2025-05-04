@@ -16,7 +16,7 @@ public interface OperationMapper {
     @Mapping(source = "operationType.name", target = "operationTypeName")
     @Mapping(source = "operationStatus.name", target = "operationStatusName")
     @Mapping(source = "clientType.name", target = "clientTypeName")
-    @Mapping(source = "bankAccount.id", target = "bankAccountId") // исправлено
+    @Mapping(source = "bankAccount.id", target = "bankAccountId")
     OperationDto toDto(Operation operation);
 
     List<OperationDto> toDtoList(List<Operation> operations);
