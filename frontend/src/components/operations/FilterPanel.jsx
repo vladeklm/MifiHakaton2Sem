@@ -35,55 +35,15 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
     onResetFilters();
   };
 
-  const handleAdvancedFilterChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'min' || name === 'max') {
-      setAdvancedFilters(prev => ({
-        ...prev,
-        amount: {
-          ...prev.amount,
-          [name]: value
-        }
-      }));
-    } else {
-      setAdvancedFilters(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
-
   const handleAmountChange = (e) => {
     const { name, value } = e.target;
-    const numValue = value === '' ? '' : Number(value);
-
-    if (name === 'min') {
-      if (advancedFilters.amount.max !== '' && numValue > Number(advancedFilters.amount.max)) {
-        // Если минимальная сумма больше максимальной, очищаем максимальную
-        setAdvancedFilters(prev => ({
-          ...prev,
-          amount: { min: value, max: '' }
-        }));
-      } else {
-        setAdvancedFilters(prev => ({
-          ...prev,
-          amount: { ...prev.amount, min: value }
-        }));
+    setAdvancedFilters(prev => ({
+      ...prev,
+      amount: {
+        ...prev.amount,
+        [name]: value
       }
-    } else {
-      if (advancedFilters.amount.min !== '' && numValue < Number(advancedFilters.amount.min)) {
-        // Если максимальная сумма меньше минимальной, очищаем минимальную
-        setAdvancedFilters(prev => ({
-          ...prev,
-          amount: { min: '', max: value }
-        }));
-      } else {
-        setAdvancedFilters(prev => ({
-          ...prev,
-          amount: { ...prev.amount, max: value }
-        }));
-      }
-    }
+    }));
   };
 
   const handleDateChange = (e, field) => {
@@ -173,7 +133,7 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
             type="text"
             name="bank"
             value={advancedFilters.bank}
-            onChange={handleAdvancedFilterChange}
+            onChange={handleAmountChange}
             placeholder="Банк"
           />
         </div>
@@ -182,7 +142,7 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
             type="text"
             name="inn"
             value={advancedFilters.inn}
-            onChange={handleAdvancedFilterChange}
+            onChange={handleAmountChange}
             placeholder="ИНН"
           />
         </div>
@@ -193,8 +153,6 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
             value={advancedFilters.amount.min}
             onChange={handleAmountChange}
             placeholder="Сумма от"
-            min="0"
-            max={advancedFilters.amount.max || undefined}
           />
           <span className="amount-separator">—</span>
           <input
@@ -203,7 +161,6 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
             value={advancedFilters.amount.max}
             onChange={handleAmountChange}
             placeholder="до"
-            min={advancedFilters.amount.min || 0}
           />
         </div>
       </div>
