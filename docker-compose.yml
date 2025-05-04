@@ -32,8 +32,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/fin_audit
       SPRING_DATASOURCE_USERNAME: appuser
       SPRING_DATASOURCE_PASSWORD: secretpassword
-      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
       SPRING_MVC_CORS_ALLOWED_ORIGINS: "http://frontend:3000,http://localhost:3000"
+      SPRING_JWT_SECRET: "SuperSecretKeyWithAtLeast512BitsLength"
+      SPRING_JWT_EXPIRATION_MS: 86400000
     ports:
       - "8080:8080"
     networks:
