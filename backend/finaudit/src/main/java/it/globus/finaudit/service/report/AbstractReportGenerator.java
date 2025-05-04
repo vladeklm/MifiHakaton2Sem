@@ -37,7 +37,6 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     private final ReportTemplate reportTemplate;
 
 
-
     public AbstractReportGenerator(OperationRepository operationRepository, ReportTemplate reportTemplate) {
         this.operationRepository = operationRepository;
         this.reportTemplate = reportTemplate;
@@ -45,8 +44,8 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] generateGeneralReport(OperationFilter filter) {
-        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilter(filter);
+    public byte[] generateGeneralReport(OperationFilter filter, Long userId) {
+        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilterAndUserId(filter, userId);
         List<Operation> operations = operationRepository.findAll(criteria);
         List<OperationForJasper> operationForJasper = mapOperationForJasper(operations);
         log.trace("Generating report for {} operations", operationForJasper.size());
@@ -62,53 +61,54 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] generatePieChartIncome(OperationFilter filter) {
+    public byte[] generatePieChartIncome(OperationFilter filter, Long userId) {
         filter.setOperationType("Поступление");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График поступлений");
-        return generatePieChart(filter, parameters);
+        return generatePieChart(filter, parameters, userId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] generatePieChartWithdraw(OperationFilter filter) {
+    public byte[] generatePieChartWithdraw(OperationFilter filter, Long userId) {
         filter.setOperationType("Списание");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График списаний");
-        return generatePieChart(filter, parameters);
+        return generatePieChart(filter, parameters, userId);
     }
 
     @Override
-    public byte[] generateWeeklyDynamicsOperationsReport(OperationFilter filter) {
+    public byte[] generateWeeklyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Недельная динамика операций",
                 op -> op.getDateTimeOperation().toLocalDate().format(dateFormat),
-                generatingAllDaysOfWeek(filter.getDateFrom(), filter.getDateTo()));
+                generatingAllDaysOfWeek(filter.getDateFrom(), filter.getDateTo()),userId);
     }
 
     @Override
-    public byte[] generateMonthlyDynamicsOperationsReport(OperationFilter filter) {
+    public byte[] generateMonthlyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Месячная динамика операций",
                 op -> op.getDateTimeOperation().toLocalDate().format(dateFormat),
-                generatingAllWeeksOfMonth(filter.getDateFrom(), filter.getDateTo()));
+                generatingAllWeeksOfMonth(filter.getDateFrom(), filter.getDateTo()),userId);
     }
 
     @Override
-    public byte[] generateQuarterlyDynamicsOperationsReport(OperationFilter filter) {
+    public byte[] generateQuarterlyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Квартальная динамика операций",
                 op -> op.getDateTimeOperation().format(monthFormat),
-                generatingAllMonthOfQuarter(filter.getDateFrom(), filter.getDateTo()));
+                generatingAllMonthOfQuarter(filter.getDateFrom(), filter.getDateTo()),userId);
     }
 
     @Override
-    public byte[] generateYearlyDynamicsOperationsReport(OperationFilter filter) {
+    public byte[] generateYearlyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Годовая динамика операций",
                 op -> op.getDateTimeOperation().format(monthFormat),
-                generatingAllMonthOfYear(filter.getDateFrom(), filter.getDateTo()));
+                generatingAllMonthOfYear(filter.getDateFrom(), filter.getDateTo()),
+                userId);
     }
 
 
-    private byte[] generatePieChart(OperationFilter filter, Map<String, Object> parameters) {
-        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilter(filter);
+    private byte[] generatePieChart(OperationFilter filter, Map<String, Object> parameters, Long userId) {
+        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilterAndUserId(filter, userId);
         List<Operation> operations = operationRepository.findAll(criteria);
         List<AmountByCategory> amountByCategories = operations.stream()
                 .collect(Collectors.groupingBy(
@@ -130,8 +130,9 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
 
     private byte[] generateDynamicsReport(OperationFilter filter, String title,
                                           Function<Operation, String> periodExtractor,
-                                          List<String> allPeriods) {
-        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilter(filter);
+                                          List<String> allPeriods,
+                                          Long userId) {
+        Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilterAndUserId(filter, userId);
         List<Operation> operations = operationRepository.findAll(criteria);
 
         List<NumberOperationsForPeriod> allOperations = generateCompleteOperationsData(

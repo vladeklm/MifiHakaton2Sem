@@ -1,12 +1,13 @@
 package it.globus.finaudit.repository.specifications;
 
 import it.globus.finaudit.DTO.OperationFilter;
-import org.springframework.data.jpa.domain.Specification;
 import it.globus.finaudit.entity.Operation;
+import org.springframework.data.jpa.domain.Specification;
 
 public class OperationSpecificationBuilder {
 
-    public static Specification<Operation> buildFromFilter(OperationFilter filter) {
+    private static Specification<Operation> buildFromFilter(OperationFilter filter) {
+
         Specification<Operation> spec = Specification.where(null);
 
         if (filter == null) {
@@ -48,7 +49,10 @@ public class OperationSpecificationBuilder {
                     filter.getMaxAmount()
             ));
         }
-
         return spec;
+    }
+
+    public static Specification<Operation> buildFromFilterAndUserId(OperationFilter filter,Long userId) {
+        return buildFromFilter(filter).and(OperationSpecifications.equalsUserId(userId));
     }
 }

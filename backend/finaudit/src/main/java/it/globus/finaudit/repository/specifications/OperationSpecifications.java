@@ -8,6 +8,11 @@ import java.time.LocalDate;
 
 public class OperationSpecifications {
 
+    public static Specification<Operation> equalsUserId(Long userId){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("client").get("id"), userId);
+    }
+
     public static Specification<Operation> equalsBankFromId(Long bankFromId) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("bankFromId"), bankFromId);

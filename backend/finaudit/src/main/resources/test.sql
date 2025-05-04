@@ -26,14 +26,14 @@ INSERT INTO operation_categories (id, name,is_actual) VALUES
                                                           (8, 'Налоговый платеж',true);
 
 
--- Вставка пользователей с created_at и updated_at
+-- Вставка пользователей с created_at и updated_at, password = password1234
 INSERT INTO users (login, password, role, created_at, updated_at)
 VALUES
-    ('test1', 'password1234', 'ROLE_USER', NOW(), NOW()),
-    ('test2', 'password1234', 'ROLE_USER', NOW(), NOW()),
-    ('test3', 'password1234', 'ROLE_USER', NOW(), NOW()),
-    ('test4', 'password1234', 'ROLE_USER', NOW(), NOW()),
-    ('test5', 'password1234', 'ROLE_USER', NOW(), NOW());
+    ('test1', '$2a$12$apuFcZlMOD4seJRqgDnfFuqRMB.cfkijRwGD6HNri1cQ5MzjDF4yK', 'ROLE_USER', NOW(), NOW()),
+    ('test2', '$2a$12$apuFcZlMOD4seJRqgDnfFuqRMB.cfkijRwGD6HNri1cQ5MzjDF4yK', 'ROLE_USER', NOW(), NOW()),
+    ('test3', '$2a$12$apuFcZlMOD4seJRqgDnfFuqRMB.cfkijRwGD6HNri1cQ5MzjDF4yK', 'ROLE_USER', NOW(), NOW()),
+    ('test4', '$2a$12$apuFcZlMOD4seJRqgDnfFuqRMB.cfkijRwGD6HNri1cQ5MzjDF4yK', 'ROLE_USER', NOW(), NOW()),
+    ('test5', '$2a$12$apuFcZlMOD4seJRqgDnfFuqRMB.cfkijRwGD6HNri1cQ5MzjDF4yK', 'ROLE_USER', NOW(), NOW());
 
 -- Вставка клиентов с created_at и updated_at
 INSERT INTO clients (user_id, first_name, second_name, created_at, updated_at)
