@@ -1,4 +1,4 @@
-package it.globus.finaudit.service.transactions;
+package it.globus.finaudit.service.operations;
 
 import it.globus.finaudit.DTO.OperationDto;
 import it.globus.finaudit.DTO.OperationMapper;
@@ -107,7 +107,6 @@ public class OperationService {
         if (dto.getDateTimeOperation() != null) operation.setDateTimeOperation(dto.getDateTimeOperation());
         if (dto.getBankRecipientAccountId() != null) operation.setBankRecipientAccountId(dto.getBankRecipientAccountId());
 
-        // Обновляем вложенные сущности, если они существуют
         if (dto.getOperationCategoryName() != null && operation.getOperationCategory() != null) {
             operation.getOperationCategory().setName(dto.getOperationCategoryName());
         }
