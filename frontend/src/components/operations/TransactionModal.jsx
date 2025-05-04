@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import './TransactionModal.css';
+import InputMask from 'react-input-mask';
 
-const TransactionModal = ({ transaction, onClose, onSave }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState({
-    ...transaction,
-    datetime: new Date(transaction.datetime).toISOString().slice(0, 16)
+
+const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = false }) => {
+  const [isEditing, setIsEditing] = useState(isEditingInitial);
+  const [editedData, setEditedData] = useState(() => {
+    if (!transaction) return {};
+  
+    return {
+      ...transaction,
+      dateTimeOperation: transaction.dateTimeOperation
+        ? new Date(transaction.dateTimeOperation).toISOString().slice(0, 16)
+        : ''
+    };
   });
+
+  console.log("transactions", transaction)
 
   const handleEdit = () => {
     if (isEditing) {
@@ -23,14 +33,14 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
     }));
   };
 
-  const formatDateTime = (datetime) => {
+  const formatDateTime = (dateTimeOperation) => {
     return new Intl.DateTimeFormat('ru-RU', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit'
-    }).format(new Date(datetime));
+    }).format(new Date(dateTimeOperation));
   };
 
   const formatAmount = (amount) => {
@@ -47,9 +57,9 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            {transaction.transactionType === 'Поступление' ? '⬇' : '⬆'} 
+            {transaction.operationTypeName === 'Поступление' ? '⬇' : '⬆'} 
             {' '}
-            {transaction.transactionType}
+            {transaction.operationTypeName}
           </h2>
           <button className="close-button" onClick={onClose}>✕</button>
         </div>
@@ -63,37 +73,57 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
                 {isEditing ? (
                   <input
                     type="datetime-local"
-                    name="datetime"
-                    value={editedData.datetime}
+                    name="dateTimeOperation"
+                    value={editedData.dateTimeOperation}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span className="value">{formatDateTime(transaction.datetime)}</span>
+                  <span className="value">{formatDateTime(transaction.dateTimeOperation)}</span>
                 )}
               </div>
               <div className="info-row">
                 <span className="label">Сумма:</span>
-                <span className={`value ${transaction.transactionType === 'Поступление' ? 'income' : 'expense'}`}>
-                  {formatAmount(transaction.amount)}
-                </span>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    name="amount"
+                    value={editedData.amount}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                  />
+                ) : (
+                  <span className={`value ${transaction.operationTypeName === 'Поступление' ? 'income' : 'expense'}`}>
+                    {formatAmount(transaction.amount)}
+                  </span>
+                )}
               </div>
               <div className="info-row">
                 <span className="label">Статус:</span>
-                <span className={`status ${transaction.status.toLowerCase()}`}>
-                  {transaction.status}
+                <span className={`status ${transaction.operationStatusName.toLowerCase().replace(/\s/g, '-')}`}>
+                  {transaction.operationStatusName}
                 </span>
               </div>
               <div className="info-row">
                 <span className="label">Категория:</span>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    name="category"
-                    value={editedData.category}
+                  <select
+                    name="operationCategoryName"
+                    value={editedData.operationCategoryName}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="">Выберите категорию</option>
+                    <option value="Зарплата">Зарплата</option>
+                    <option value="Пополнение счета">Пополнение счета</option>
+                    <option value="Возврат средств">Возврат средств</option>
+                    <option value="Налоговый вычет">Налоговый вычет</option>
+                    <option value="Перевод между счетами">Перевод между счетами</option>
+                    <option value="Оплата услуг">Оплата услуг</option>
+                    <option value="Кредитный платеж">Кредитный платеж</option>
+                    <option value="Налоговый платеж">Налоговый платеж</option>
+                  </select>
                 ) : (
-                  <span className="value">{transaction.category}</span>
+                  <span className="value">{transaction.operationCategoryName}</span>
                 )}
               </div>
             </div>
@@ -104,15 +134,15 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
                 <span className="label">Тип лица:</span>
                 {isEditing ? (
                   <select
-                    name="personType"
-                    value={editedData.personType}
+                    name="clientTypeName"
+                    value={editedData.clientTypeName}
                     onChange={handleChange}
                   >
                     <option value="Физическое">Физическое</option>
                     <option value="Юридическое">Юридическое</option>
                   </select>
                 ) : (
-                  <span className="value">{transaction.personType}</span>
+                  <span className="value">{transaction.clientTypeName}</span>
                 )}
               </div>
               <div className="info-row">
@@ -120,25 +150,31 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
                 {isEditing ? (
                   <input
                     type="text"
-                    name="receiverINN"
-                    value={editedData.receiverINN}
-                    onChange={handleChange}
+                    name="inn"
+                    value={editedData.inn}
+                    onChange={(e) => {
+                      const onlyDigits = e.target.value.replace(/\D/g, '');
+                      if (onlyDigits.length <= 11) {
+                        handleChange({ target: { name: 'inn', value: onlyDigits } });
+                      }
+                    }}
                   />
                 ) : (
-                  <span className="value">{transaction.receiverINN}</span>
+                  <span className="value">{transaction.inn}</span>
                 )}
               </div>
               <div className="info-row">
                 <span className="label">Телефон:</span>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    name="receiverPhone"
-                    value={editedData.receiverPhone}
-                    onChange={handleChange}
-                  />
+                  <InputMask
+                    mask="+7 (999) 999-99-99"
+                    value={editedData.phoneNumber}
+                    onChange={(e) => setEditedData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                  >
+                    {(inputProps) => <input type="tel" name="phoneNumber" {...inputProps} />}
+                  </InputMask>
                 ) : (
-                  <span className="value">{transaction.receiverPhone}</span>
+                  <span className="value">{transaction.phoneNumber}</span>
                 )}
               </div>
             </div>
@@ -219,7 +255,7 @@ const TransactionModal = ({ transaction, onClose, onSave }) => {
         </div>
 
         <div className="modal-footer">
-          {transaction.status === 'Новая' && (
+          {transaction.operationStatusName === 'Новая' && (
             <button 
               className={`edit-button ${isEditing ? 'save' : ''}`}
               onClick={handleEdit}

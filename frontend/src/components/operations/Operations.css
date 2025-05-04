@@ -101,9 +101,34 @@
   color: #1976d2;
 }
 
+.status.в-обработке {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
 .status.подтвержденная {
   background-color: #e8f5e9;
   color: #2e7d32;
+}
+
+.status.платеж-выполнен {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.платеж-удален {
+  background-color: #fbe9e7;
+  color: #bf360c;
+}
+
+.status.отменена {
+  background-color: #fbe9e7;
+  color: #bf360c;
+}
+
+.status.возврат {
+  background-color: #fbe9e7;
+  color: #bf360c;
 }
 
 .actions {

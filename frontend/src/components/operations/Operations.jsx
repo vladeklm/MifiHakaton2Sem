@@ -3,6 +3,7 @@ import './Operations.css';
 import TransactionModal from './TransactionModal';
 import FilterPanel from './FilterPanel';
 import { operationsApi } from '../../api/operations';
+import ConfirmModal from './ConfirmModal';
 
 const PAGE_SIZE = 10;
 
@@ -22,6 +23,7 @@ const Operations = () => {
     bank: '',
     inn: ''
   });
+  const [operationToDelete, setOperationToDelete] = useState(null);
 
   useEffect(() => {
     const fetchOperations = async () => {
@@ -89,14 +91,18 @@ const Operations = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Вы уверены, что хотите удалить эту операцию?')) {
-      try {
-        // TODO: Добавить метод удаления в API
-        setOperations(prev => prev.filter(op => op.id !== id));
-      } catch (err) {
-        setError('Ошибка при удалении операции');
-        console.error(err);
-      }
+    setOperationToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await operationsApi.deleteOperation(operationToDelete);
+      setOperations(prev => prev.filter(op => op.id !== operationToDelete));
+    } catch (err) {
+      setError('Ошибка при удалении операции');
+      console.error(err);
+    } finally {
+      setOperationToDelete(null); // закрываем модалку
     }
   };
 
@@ -112,7 +118,7 @@ const Operations = () => {
 
   const handleAddTransaction = () => {
     setSelectedOperation({
-      clientId: 1, // TODO: заменить на реальный clientId
+      client: 1, // TODO: заменить на реальный clientId
       clientTypeName: 'Физическое',
       dateTimeOperation: new Date().toISOString().slice(0, 16),
       operationTypeName: 'Поступление',
@@ -130,14 +136,67 @@ const Operations = () => {
   };
 
   const handleSave = async (updatedOperation) => {
+    const categoryMap = {
+      'Зарплата': 1,
+      'Пополнение счета': 2,
+      'Возврат средств': 3,
+      'Налоговый вычет': 4,
+      'Перевод между счетами': 5,
+      'Оплата услуг': 6,
+      'Кредитный платеж': 7,
+      'Налоговый платеж': 8
+    };
+  
+    const typeMap = {
+      'Поступление': 1,
+      'Списание': 2
+    };
+  
+    const statusMap = {
+      'Новая': 1,
+      'Подтвержденная': 2,
+      'В обработке': 3,
+      'Отменена': 4,
+      'Платеж выполнен': 5,
+      'Платеж удален': 6,
+      'Возврат': 7
+    };
+  
+    const clientTypeMap = {
+      'Физическое': 1,
+      'Юридическое': 2
+    };
+  
     try {
+      const operationToSave = {
+        client: {
+          user: {
+            id: updatedOperation.client?.user?.id || updatedOperation.clientUserId || 1
+          }
+        },
+        operationType: { id: typeMap[updatedOperation.operationTypeName] },
+        operationCategory: { id: categoryMap[updatedOperation.operationCategoryName] },
+        operationStatus: { id: statusMap[updatedOperation.operationStatusName] },
+        clientType: { id: clientTypeMap[updatedOperation.clientTypeName] },
+        dateTimeOperation: updatedOperation.dateTimeOperation,
+        amount: Number(updatedOperation.amount),
+        comment: updatedOperation.comment,
+        phoneNumber: updatedOperation.phoneNumber.replace(/\D/g, ''),
+        inn: updatedOperation.inn,
+        bankFromId: updatedOperation.bankFromId,
+        bankToId: updatedOperation.bankToId,
+        bankRecipientAccountId: updatedOperation.bankRecipientAccountId,
+        bankAccount: updatedOperation.bankAccountId ? { id: updatedOperation.bankAccountId } : null,
+      };
+
+      console.log('Отправляется в API:', JSON.stringify(operationToSave, null, 2));
+
       if (updatedOperation.id) {
-        await operationsApi.updateOperation(updatedOperation.id, updatedOperation);
+        await operationsApi.updateOperation(updatedOperation.id, operationToSave);
       } else {
-        await operationsApi.createOperation(updatedOperation);
+        await operationsApi.createOperation(operationToSave);
       }
       setSelectedOperation(null);
-      // Обновляем список операций
       const response = await operationsApi.getOperations(1);
       setOperations(response.data.content);
     } catch (err) {
@@ -200,19 +259,21 @@ const Operations = () => {
                 </td>
                 <td>{op.operationCategoryName}</td>
                 <td>
-                  <span className={`status ${op.operationStatusName.toLowerCase()}`}>
+                  <span className={`status ${op.operationStatusName.toLowerCase().replace(/\s/g, '-')}`}>
                     {op.operationStatusName}
                   </span>
                 </td>
                 <td>{op.clientTypeName}</td>
                 <td className="actions">
-                  <button 
-                    className="edit-btn"
-                    onClick={() => handleEdit(op.id)}
-                    title="Редактировать"
-                  >
-                    ✎
-                  </button>
+                  {op.operationStatusName === 'Новая' && (
+                    <button 
+                      className="edit-btn"
+                      onClick={() => handleEdit(op.id)}
+                      title="Редактировать"
+                    >
+                      ✎
+                    </button>
+                  )}
                   {op.operationStatusName === 'Новая' && (
                     <button 
                       className="delete-btn"
@@ -254,9 +315,18 @@ const Operations = () => {
 
       {selectedOperation && (
         <TransactionModal
-          operation={selectedOperation}
+          transaction={selectedOperation}
           onClose={() => setSelectedOperation(null)}
           onSave={handleSave}
+          isEditingInitial={!selectedOperation.id}
+        />
+      )}
+
+      {operationToDelete !== null && (
+        <ConfirmModal
+          message="Вы уверены, что хотите удалить эту операцию?"
+          onConfirm={confirmDelete}
+          onCancel={() => setOperationToDelete(null)}
         />
       )}
     </div>
