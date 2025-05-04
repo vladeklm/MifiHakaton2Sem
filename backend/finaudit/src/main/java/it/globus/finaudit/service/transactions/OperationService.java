@@ -2,8 +2,10 @@ package it.globus.finaudit.service.transactions;
 
 import it.globus.finaudit.DTO.OperationDto;
 import it.globus.finaudit.DTO.OperationMapper;
-import it.globus.finaudit.entity.Operation;
-import it.globus.finaudit.repository.OperationRepository;
+import it.globus.finaudit.entity.*;
+import it.globus.finaudit.repository.*;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,36 +20,60 @@ public class OperationService {
 
     private final OperationRepository repository;
     private final OperationMapper mapper;
+    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
+    private final OperationCategoryRepository operationCategoryRepository;
+    private final OperationTypeRepository operationTypeRepository;
+    private final ClientTypeRepository clientTypeRepository;
+    private final OperationStatusRepository operationStatusRepository;
+    private final BankAccountRepository bankAccountRepository;
 
+    @Transactional
     public ResponseEntity<String> createOperation(Operation operation) {
+
+        User user = userRepository.findById(operation.getClient().getUser().getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Client client = clientRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+
+        OperationCategory operationCategory = operationCategoryRepository.findById(operation.getOperationCategory().getId())
+                .orElseThrow(() -> new EntityNotFoundException("OperationCategory not found"));
+
+        OperationType operationType = operationTypeRepository.findById(operation.getOperationType().getId())
+                .orElseThrow(() -> new EntityNotFoundException("OperationType not found"));
+
+        ClientType clientType = clientTypeRepository.findById(operation.getClientType().getId())
+                .orElseThrow(() -> new EntityNotFoundException("ClientType not found"));
+
+        OperationStatus operationStatus = operationStatusRepository.findById(operation.getOperationStatus().getId())
+                .orElseThrow(() -> new EntityNotFoundException("OperationStatus not found"));
+
+        BankAccount bankAccount = bankAccountRepository.findById(operation.getBankAccount().getId())
+                .orElseThrow(() -> new EntityNotFoundException("BankAccount not found"));
 
         var newOperation = Operation.builder()
                 .dateTimeOperation(operation.getDateTimeOperation())
-                .operationCategory(operation.getOperationCategory())
-                .operationStatus(operation.getOperationStatus())
-                .operationType(operation.getOperationType())
+                .operationCategory(operationCategory)
+                .operationStatus(operationStatus)
+                .operationType(operationType)
                 .amount(operation.getAmount())
-                .bankAccount(operation.getBankAccount())
+                .bankAccount(bankAccount)
                 .createdAt(operation.getCreatedAt())
                 .bankFromId(operation.getBankFromId())
                 .bankToId(operation.getBankToId())
                 .bankRecipientAccountId(operation.getBankRecipientAccountId())
-                .client(operation.getClient())
+                .client(client)
                 .inn(operation.getInn())
                 .comment(operation.getComment())
-                .clientType(operation.getClientType())
+                .clientType(clientType)
                 .phoneNumber(operation.getPhoneNumber())
                 .updatedAt(operation.getUpdatedAt())
                 .build();
 
-        if (newOperation != null) {
+        repository.save(newOperation);
 
-            repository.save(operation);
-
-            return ResponseEntity.ok("success");
-        }
-
-        return ResponseEntity.ofNullable("bad request");
+        return ResponseEntity.ok("success");
     }
 
     public Page<OperationDto> getOperationList(Long clientId, Pageable pageable) {
