@@ -1,98 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Operations.css';
 import TransactionModal from './TransactionModal';
 import FilterPanel from './FilterPanel';
+import { operationsApi } from '../../api/operations';
 
-const mockData = [
-  {
-    id: 1,
-    personType: 'Физическое',
-    datetime: '2024-03-20 14:30',
-    transactionType: 'Поступление',
-    comment: 'Зарплата за март',
-    amount: 150000,
-    status: 'Подтвержденная',
-    senderBank: 'Сбербанк',
-    account: '40817810099910004312',
-    receiverBank: 'Тинькофф',
-    receiverINN: '7710140679',
-    receiverAccount: '40817810099910004312',
-    category: 'Зарплата',
-    receiverPhone: '+7 (999) 123-45-67'
-  },
-  {
-    id: 2,
-    personType: 'Юридическое',
-    datetime: '2024-03-19 11:20',
-    transactionType: 'Списание',
-    comment: 'Оплата аренды офиса',
-    amount: 75000,
-    status: 'Новая',
-    senderBank: 'Тинькофф',
-    account: '40817810099910004312',
-    receiverBank: 'ВТБ',
-    receiverINN: '7702070139',
-    receiverAccount: '40817810099910004312',
-    category: 'Аренда',
-    receiverPhone: '+7 (999) 765-43-21'
-  },
-  // Добавьте больше мокированных данных по необходимости
-];
-
-const createEmptyTransaction = () => ({
-  id: Date.now(), // временный ID
-  personType: 'Физическое',
-  datetime: new Date().toISOString().slice(0, 16),
-  transactionType: 'Поступление',
-  comment: '',
-  amount: 0,
-  status: 'Новая',
-  senderBank: '',
-  account: '',
-  receiverBank: '',
-  receiverINN: '',
-  receiverAccount: '',
-  category: '',
-  receiverPhone: ''
-});
+const PAGE_SIZE = 10;
 
 const Operations = () => {
-  const [operations, setOperations] = useState(mockData);
+  const [operations, setOperations] = useState([]);
   const [selectedOperation, setSelectedOperation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const [filters, setFilters] = useState({
     dateRange: { start: '', end: '' },
-    transactionType: '',
-    status: '',
-    category: '',
-    personType: '',
+    operationTypeName: '',
+    operationStatusName: '',
+    operationCategoryName: '',
+    clientTypeName: '',
     amount: { min: '', max: '' },
     bank: '',
     inn: ''
   });
 
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await operationsApi.getOperations(1); // TODO: заменить 1 на реальный clientId
+        setOperations(response.data.content);
+      } catch (err) {
+        setError('Ошибка при загрузке операций');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOperations();
+  }, []);
+
   const handleApplyFilters = (newFilters) => {
     setFilters(newFilters);
+    setCurrentPage(0);
   };
 
   const handleResetFilters = () => {
     setFilters({
       dateRange: { start: '', end: '' },
-      transactionType: '',
-      status: '',
-      category: '',
-      personType: '',
+      operationTypeName: '',
+      operationStatusName: '',
+      operationCategoryName: '',
+      clientTypeName: '',
       amount: { min: '', max: '' },
       bank: '',
       inn: ''
     });
+    setCurrentPage(0);
   };
 
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
       currency: 'RUB',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(amount);
   };
 
@@ -106,85 +78,97 @@ const Operations = () => {
     }).format(new Date(datetime));
   };
 
-  const handleEdit = (id) => {
-    const operation = operations.find(op => op.id === id);
-    if (operation) {
-      setSelectedOperation(operation);
+  const handleEdit = async (id) => {
+    try {
+      const response = await operationsApi.getOperation(id);
+      setSelectedOperation(response.data);
+    } catch (err) {
+      setError('Ошибка при загрузке операции');
+      console.error(err);
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Вы уверены, что хотите удалить эту операцию?')) {
-      setOperations(prev => prev.filter(op => op.id !== id));
+      try {
+        // TODO: Добавить метод удаления в API
+        setOperations(prev => prev.filter(op => op.id !== id));
+      } catch (err) {
+        setError('Ошибка при удалении операции');
+        console.error(err);
+      }
     }
   };
 
-  const handleDetails = (id) => {
-    const operation = operations.find(op => op.id === id);
-    if (operation) {
-      setSelectedOperation(operation);
+  const handleDetails = async (id) => {
+    try {
+      const response = await operationsApi.getOperation(id);
+      setSelectedOperation(response.data);
+    } catch (err) {
+      setError('Ошибка при загрузке деталей операции');
+      console.error(err);
     }
   };
 
   const handleAddTransaction = () => {
-    const newTransaction = createEmptyTransaction();
-    setSelectedOperation(newTransaction);
+    setSelectedOperation({
+      clientId: 1, // TODO: заменить на реальный clientId
+      clientTypeName: 'Физическое',
+      dateTimeOperation: new Date().toISOString().slice(0, 16),
+      operationTypeName: 'Поступление',
+      comment: '',
+      amount: 0,
+      operationStatusName: 'Новая',
+      bankFromId: null,
+      bankToId: null,
+      bankRecipientAccountId: null,
+      bankAccountId: null,
+      inn: '',
+      phoneNumber: '',
+      operationCategoryName: ''
+    });
   };
 
-  const handleSave = (updatedOperation) => {
-    if (operations.find(op => op.id === updatedOperation.id)) {
-      // Обновление существующей операции
-      setOperations(prev => 
-        prev.map(op => 
-          op.id === updatedOperation.id ? updatedOperation : op
-        )
-      );
-    } else {
-      // Добавление новой операции
-      setOperations(prev => [...prev, updatedOperation]);
+  const handleSave = async (updatedOperation) => {
+    try {
+      if (updatedOperation.id) {
+        await operationsApi.updateOperation(updatedOperation.id, updatedOperation);
+      } else {
+        await operationsApi.createOperation(updatedOperation);
+      }
+      setSelectedOperation(null);
+      // Обновляем список операций
+      const response = await operationsApi.getOperations(1);
+      setOperations(response.data.content);
+    } catch (err) {
+      setError('Ошибка при сохранении операции');
+      console.error(err);
     }
-    setSelectedOperation(null);
-  };
-
-  const formatPhoneNumber = (phone) => {
-    // Убираем все нецифровые символы
-    const cleaned = phone.replace(/\D/g, '');
-    
-    // Форматируем телефон: +7 (XXX) XXX-XX-XX
-    const match = cleaned.match(/^7?(\d{3})(\d{3})(\d{2})(\d{2})$/);
-    
-    if (match) {
-      return `+7 (${match[1]}) ${match[2]}-${match[3]}-${match[4]}`;
-    }
-    
-    return phone;
   };
 
   const filteredOperations = operations.filter(op => {
-    const dateInRange = (!filters.dateRange.start || new Date(op.datetime) >= new Date(filters.dateRange.start)) &&
-                       (!filters.dateRange.end || new Date(op.datetime) <= new Date(filters.dateRange.end));
-    
+    const dateInRange = (!filters.dateRange.start || new Date(op.dateTimeOperation) >= new Date(filters.dateRange.start)) &&
+                       (!filters.dateRange.end || new Date(op.dateTimeOperation) <= new Date(filters.dateRange.end));
     const amountInRange = (!filters.amount?.min || op.amount >= Number(filters.amount.min)) &&
                          (!filters.amount?.max || op.amount <= Number(filters.amount.max));
-
-    const bankMatches = !filters.bank || 
-                       op.senderBank.toLowerCase().includes(filters.bank.toLowerCase()) ||
-                       op.receiverBank.toLowerCase().includes(filters.bank.toLowerCase());
-
-    const innMatches = !filters.inn || op.receiverINN.includes(filters.inn);
-    
+    const innMatches = !filters.inn || op.inn.includes(filters.inn);
     return dateInRange &&
            amountInRange &&
-           bankMatches &&
            innMatches &&
-           (!filters.personType || op.personType === filters.personType) &&
-           (!filters.transactionType || op.transactionType === filters.transactionType) &&
-           (!filters.status || op.status === filters.status) &&
-           (!filters.category || op.category === filters.category);
+           (!filters.clientTypeName || op.clientTypeName === filters.clientTypeName) &&
+           (!filters.operationTypeName || op.operationTypeName === filters.operationTypeName) &&
+           (!filters.operationStatusName || op.operationStatusName === filters.operationStatusName) &&
+           (!filters.operationCategoryName || op.operationCategoryName === filters.operationCategoryName);
   });
+
+  const totalPages = Math.ceil(filteredOperations.length / PAGE_SIZE);
+  const paginatedOperations = filteredOperations.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
 
   return (
     <div className="operations">
+      {error && <div className="error-message">{error}</div>}
+      {loading && <div className="loading">Загрузка...</div>}
+
       <FilterPanel 
         onApplyFilters={handleApplyFilters}
         onResetFilters={handleResetFilters}
@@ -200,27 +184,27 @@ const Operations = () => {
               <th>Сумма</th>
               <th>Категория</th>
               <th>Статус</th>
-              <th>Контрагент</th>
+              <th>Тип клиента</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {filteredOperations.map(op => (
+            {paginatedOperations.map(op => (
               <tr key={op.id}>
-                <td>{formatDateTime(op.datetime)}</td>
-                <td className={op.transactionType === 'Поступление' ? 'income' : 'expense'}>
-                  {op.transactionType}
+                <td>{formatDateTime(op.dateTimeOperation)}</td>
+                <td className={op.operationTypeName === 'Поступление' ? 'income' : 'expense'}>
+                  {op.operationTypeName}
                 </td>
-                <td className={op.transactionType === 'Поступление' ? 'income' : 'expense'}>
+                <td className={op.operationTypeName === 'Поступление' ? 'income' : 'expense'}>
                   {formatAmount(op.amount)}
                 </td>
-                <td>{op.category}</td>
+                <td>{op.operationCategoryName}</td>
                 <td>
-                  <span className={`status ${op.status.toLowerCase()}`}>
-                    {op.status}
+                  <span className={`status ${op.operationStatusName.toLowerCase()}`}>
+                    {op.operationStatusName}
                   </span>
                 </td>
-                <td>{op.transactionType === 'Поступление' ? op.senderBank : op.receiverBank}</td>
+                <td>{op.clientTypeName}</td>
                 <td className="actions">
                   <button 
                     className="edit-btn"
@@ -229,7 +213,7 @@ const Operations = () => {
                   >
                     ✎
                   </button>
-                  {op.status === 'Новая' && (
+                  {op.operationStatusName === 'Новая' && (
                     <button 
                       className="delete-btn"
                       onClick={() => handleDelete(op.id)}
@@ -252,9 +236,25 @@ const Operations = () => {
         </table>
       </div>
 
+      <div className="pagination">
+        <button 
+          onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+          disabled={currentPage === 0}
+        >
+          Назад
+        </button>
+        <span>Страница {currentPage + 1} из {totalPages}</span>
+        <button 
+          onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+          disabled={currentPage === totalPages - 1 || totalPages === 0}
+        >
+          Вперед
+        </button>
+      </div>
+
       {selectedOperation && (
         <TransactionModal
-          transaction={selectedOperation}
+          operation={selectedOperation}
           onClose={() => setSelectedOperation(null)}
           onSave={handleSave}
         />
@@ -263,4 +263,4 @@ const Operations = () => {
   );
 };
 
-export default Operations; 
+export default Operations;
