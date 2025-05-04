@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OperationDto {
 
+    private Long id;
+
     private Long clientId;
 
     @PositiveOrZero(message = "BankFromId должен быть положительным или нулевым")
