@@ -186,25 +186,12 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                 {isEditing ? (
                   <input
                     type="text"
-                    name="senderBank"
-                    value={editedData.senderBank}
+                    name="bankFromId"
+                    value={editedData.bankFromId}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span className="value">{transaction.senderBank}</span>
-                )}
-              </div>
-              <div className="info-row">
-                <span className="label">Счет отправителя:</span>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="account"
-                    value={editedData.account}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span className="value">{transaction.account}</span>
+                  <span className="value">{transaction.bankFromId}</span>
                 )}
               </div>
               <div className="info-row">
@@ -212,12 +199,12 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                 {isEditing ? (
                   <input
                     type="text"
-                    name="receiverBank"
-                    value={editedData.receiverBank}
+                    name="bankToId"
+                    value={editedData.bankToId}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span className="value">{transaction.receiverBank}</span>
+                  <span className="value">{transaction.bankToId}</span>
                 )}
               </div>
               <div className="info-row">
@@ -225,12 +212,12 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                 {isEditing ? (
                   <input
                     type="text"
-                    name="receiverAccount"
-                    value={editedData.receiverAccount}
+                    name="bankRecipientAccount"
+                    value={editedData.bankRecipientAccount}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span className="value">{transaction.receiverAccount}</span>
+                  <span className="value">{transaction.bankRecipientAccount}</span>
                 )}
               </div>
             </div>

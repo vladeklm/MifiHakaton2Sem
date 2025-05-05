@@ -128,7 +128,7 @@ const Operations = () => {
       bankFromId: null,
       bankToId: null,
       bankRecipientAccountId: null,
-      bankAccountId: null,
+      bankAccount: null,
       inn: '',
       phoneNumber: '',
       operationCategoryName: ''
@@ -166,6 +166,12 @@ const Operations = () => {
       'Физическое': 1,
       'Юридическое': 2
     };
+
+    const bankMap = {
+      'Альфа': 1,
+      'Сбербанк': 2,
+      'Тинькофф': 3
+    };
   
     try {
       const operationToSave = {
@@ -183,10 +189,10 @@ const Operations = () => {
         comment: updatedOperation.comment,
         phoneNumber: updatedOperation.phoneNumber.replace(/\D/g, ''),
         inn: updatedOperation.inn,
-        bankFromId: updatedOperation.bankFromId,
-        bankToId: updatedOperation.bankToId,
-        bankRecipientAccountId: updatedOperation.bankRecipientAccountId,
-        bankAccount: updatedOperation.bankAccountId ? { id: updatedOperation.bankAccountId } : null,
+        bankFromId: bankMap[updatedOperation.bankFromId],
+        bankToId: bankMap[updatedOperation.bankToId],
+        bankRecipientAccount: updatedOperation.bankRecipientAccount,
+        bankAccount: {id: 1} // TODO: Подставить счет клиента 
       };
 
       console.log('Отправляется в API:', JSON.stringify(operationToSave, null, 2));
