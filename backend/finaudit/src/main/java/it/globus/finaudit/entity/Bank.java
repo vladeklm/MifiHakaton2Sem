@@ -34,4 +34,7 @@ public class Bank {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Column(unique = true)
+    private String bik;
 }
