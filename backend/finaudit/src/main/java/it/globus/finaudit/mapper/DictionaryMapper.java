@@ -1,11 +1,10 @@
 package it.globus.finaudit.mapper;
 
-import it.globus.finaudit.DTO.reportfilter.*;
+
+import it.globus.finaudit.DTO.*;
 import it.globus.finaudit.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import it.globus.finaudit.DTO.BankDTO;
-import it.globus.finaudit.DTO.CategoryDTO;
 
 @Mapper(componentModel = "spring")
 public interface DictionaryMapper {
