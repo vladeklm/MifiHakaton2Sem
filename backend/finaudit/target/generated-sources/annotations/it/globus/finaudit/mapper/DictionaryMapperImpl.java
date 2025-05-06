@@ -2,9 +2,9 @@ package it.globus.finaudit.mapper;
 
 import it.globus.finaudit.DTO.BankDTO;
 import it.globus.finaudit.DTO.CategoryDTO;
-import it.globus.finaudit.DTO.reportfilter.PersonTypeDTO;
-import it.globus.finaudit.DTO.reportfilter.TransactionStatusDTO;
-import it.globus.finaudit.DTO.reportfilter.TransactionTypeDTO;
+import it.globus.finaudit.DTO.PersonTypeDTO;
+import it.globus.finaudit.DTO.TransactionStatusDTO;
+import it.globus.finaudit.DTO.TransactionTypeDTO;
 import it.globus.finaudit.entity.Bank;
 import it.globus.finaudit.entity.Category;
 import it.globus.finaudit.entity.PersonType;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-04T23:31:07+0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
+    date = "2025-05-06T16:21:05+0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.5 (Amazon.com Inc.)"
 )
 @Component
 public class DictionaryMapperImpl implements DictionaryMapper {

@@ -1,8 +1,10 @@
 package it.globus.finaudit.service.user;
 
 
+import it.globus.finaudit.DTO.AuthenticationDTO;
 import it.globus.finaudit.entity.Role;
 import it.globus.finaudit.entity.User;
+import it.globus.finaudit.mapper.UserMapper;
 import it.globus.finaudit.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +17,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     @Transactional
-    public void registerUser(User user) {
+    public User registerUser(AuthenticationDTO authenticationDTO) {
+        User user = userMapper.toUser(authenticationDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ROLE_USER);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 
