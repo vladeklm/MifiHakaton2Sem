@@ -77,7 +77,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-chart-themes</artifactId>
-            <version>7.0.2</version>
+            <version>${jasperreports.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>

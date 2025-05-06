@@ -2,18 +2,18 @@ INSERT INTO client_types (id, name,is_actual) VALUES
                                                   (1, 'Физическое лицо',true),
                                                   (2, 'Юридическое лицо',true);
 
-INSERT INTO operation_types (id, name,is_actual) VALUES
-                                                     (1, 'Поступление',true),
-                                                     (2, 'Списание',true);
+INSERT INTO operation_types (id, name,is_actual,code) VALUES
+                                                     (1, 'Поступление',true,1),
+                                                     (2, 'Списание',true,2);
 
-INSERT INTO operation_statuses (id, name,is_actual) VALUES
-                                                        (1, 'Новая',true),
-                                                        (2, 'Подтвержденная',true),
-                                                        (3, 'В обработке',true),
-                                                        (4, 'Отменена',true),
-                                                        (5, 'Платеж выполнен',true),
-                                                        (6, 'Платеж удален',true),
-                                                        (7, 'Возврат',true);
+INSERT INTO operation_statuses (id, name,is_actual,code) VALUES
+                                                        (1, 'Новая',true,1),
+                                                        (2, 'Подтвержденная',true,2),
+                                                        (3, 'В обработке',true,3),
+                                                        (4, 'Отменена',true,4),
+                                                        (5, 'Платеж выполнен',true,5),
+                                                        (6, 'Платеж удален',true,6),
+                                                        (7, 'Возврат',true,7);
 
 INSERT INTO operation_categories (id, name,is_actual) VALUES
                                                           (1, 'Зарплата',true),

@@ -49,5 +49,11 @@ INSERT INTO transaction_statuses (code, name) VALUES
 
 INSERT INTO categories (name, type) VALUES
                                         ('Зарплата', 'INCOME'),
+                                        ('Пополнение счета','INCOME'),
+                                        ( 'Возврат средств','INCOME'),
                                         ('Продукты', 'EXPENSE'),
-                                        ('Транспорт', 'EXPENSE');
+                                        ('Транспорт', 'EXPENSE'),
+                                        ('Кредитный платеж', 'EXPENSE'),
+                                        ('Налоговый платеж', 'EXPENSE');
+
+
