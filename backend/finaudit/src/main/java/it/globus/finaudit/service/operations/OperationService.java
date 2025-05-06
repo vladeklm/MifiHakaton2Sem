@@ -1,7 +1,7 @@
 package it.globus.finaudit.service.operations;
 
-import it.globus.finaudit.DTO.OperationDto;
-import it.globus.finaudit.DTO.OperationMapper;
+import it.globus.finaudit.DTO.OperationDTO;
+import it.globus.finaudit.mapper.OperationMapper;
 import it.globus.finaudit.entity.*;
 import it.globus.finaudit.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -76,20 +76,20 @@ public class OperationService {
         return ResponseEntity.ok("success");
     }
 
-    public Page<OperationDto> getOperationList(Long clientId, Pageable pageable) {
+    public Page<OperationDTO> getOperationList(Long clientId, Pageable pageable) {
 
         Page<Operation> operationPage = repository.findAllByClient_User_Id(clientId, pageable);
 
         return operationPage.map(mapper::toDto);
     }
 
-    public ResponseEntity<OperationDto> getOperation(Long id) {
+    public ResponseEntity<OperationDTO> getOperation(Long id) {
         Optional<Operation> operation = repository.findById(id);
         return operation.map(op -> ResponseEntity.ok(mapper.toDto(op)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<String> updateDataOperation(OperationDto dto, Long id) {
+    public ResponseEntity<String> updateDataOperation(OperationDTO dto, Long id) {
 
         Optional<Operation> optionalOperation = repository.findById(id);
         if (optionalOperation.isEmpty()) {

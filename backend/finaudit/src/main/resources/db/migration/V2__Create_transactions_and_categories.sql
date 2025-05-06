@@ -4,7 +4,7 @@ CREATE TABLE categories (
                             type VARCHAR(20) NOT NULL CHECK (type IN ('INCOME', 'EXPENSE'))
 );
 
-CREATE TABLE transactions (
+CREATE TABLE operations (
                               id BIGSERIAL PRIMARY KEY,
                               user_id BIGINT NOT NULL REFERENCES users(id),
                               type VARCHAR(20) NOT NULL CHECK (type IN ('INCOME', 'EXPENSE')),

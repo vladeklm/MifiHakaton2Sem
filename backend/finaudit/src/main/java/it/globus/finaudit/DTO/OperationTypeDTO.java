@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class TransactionTypeDTO {
+public class OperationTypeDTO {
     private Long id;
 
     @NotBlank(message = "Код типа транзакции обязателен")

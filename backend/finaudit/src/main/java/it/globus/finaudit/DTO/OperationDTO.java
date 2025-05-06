@@ -1,10 +1,6 @@
 package it.globus.finaudit.DTO;
 
-import it.globus.finaudit.entity.BankAccount;
-import it.globus.finaudit.entity.ClientType;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperationDto {
+public class OperationDTO {
 
     private Long id;
 
@@ -43,7 +39,7 @@ public class OperationDto {
 
     private BigDecimal amount;
 
-    @Pattern(regexp = "^(8|\\+7)\\d{10}$", message = "Телефон должен начинаться с 8 или +7 и содержать 11 цифр (например: 89991234567 или +79991234567)")
+    @Pattern(regexp = "^(8|\\+7)\\d{10}$", message = "Телефон должен начинаться с 8 или +7 и содержать 11 цифр")
     private String phoneNumber;
 
     @Size(max = 50, message = "Operation type must be less than 50 characters")
@@ -54,6 +50,13 @@ public class OperationDto {
 
     @Size(max = 500, message = "Комментарий не должен превышать 500 символов")
     private String comment;
+
+    @NotNull
+    @Positive
+    private String operationTypeCode;
+    private String statusCode;
+    private String senderBank;
+    private String receiverBank;
 
     private LocalDateTime dateTimeOperation;
 }

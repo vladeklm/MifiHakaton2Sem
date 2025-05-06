@@ -6,14 +6,14 @@ CREATE TABLE person_types (
 );
 
 
-CREATE TABLE transaction_types (
+CREATE TABLE operations_types (
                                    id BIGSERIAL PRIMARY KEY,
                                    code VARCHAR(50) UNIQUE NOT NULL,
                                    name VARCHAR(100) NOT NULL
 );
 
 
-CREATE TABLE transaction_statuses (
+CREATE TABLE operations_statuses (
                                       id BIGSERIAL PRIMARY KEY,
                                       code VARCHAR(50) UNIQUE NOT NULL,
                                       name VARCHAR(100) NOT NULL

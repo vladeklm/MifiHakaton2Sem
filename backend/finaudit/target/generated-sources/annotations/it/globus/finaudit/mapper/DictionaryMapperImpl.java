@@ -7,15 +7,15 @@ import it.globus.finaudit.DTO.reportfilter.TransactionStatusDTO;
 import it.globus.finaudit.DTO.reportfilter.TransactionTypeDTO;
 import it.globus.finaudit.entity.Bank;
 import it.globus.finaudit.entity.Category;
+import it.globus.finaudit.entity.OperationStatus;
+import it.globus.finaudit.entity.OperationType;
 import it.globus.finaudit.entity.PersonType;
-import it.globus.finaudit.entity.TransactionStatus;
-import it.globus.finaudit.entity.TransactionType;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-04T23:31:07+0300",
+    date = "2025-05-06T01:03:19+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -52,22 +52,22 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionType toTransactionType(TransactionTypeDTO dto) {
+    public OperationType toTransactionType(TransactionTypeDTO dto) {
         if ( dto == null ) {
             return null;
         }
 
-        TransactionType transactionType = new TransactionType();
+        OperationType operationType = new OperationType();
 
-        transactionType.setId( dto.getId() );
-        transactionType.setCode( dto.getCode() );
-        transactionType.setName( dto.getName() );
+        operationType.setId( dto.getId() );
+        operationType.setCode( dto.getCode() );
+        operationType.setName( dto.getName() );
 
-        return transactionType;
+        return operationType;
     }
 
     @Override
-    public TransactionTypeDTO toTransactionTypeDTO(TransactionType entity) {
+    public TransactionTypeDTO toTransactionTypeDTO(OperationType entity) {
         if ( entity == null ) {
             return null;
         }
@@ -82,22 +82,22 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionStatus toTransactionStatus(TransactionStatusDTO dto) {
+    public OperationStatus toTransactionStatus(TransactionStatusDTO dto) {
         if ( dto == null ) {
             return null;
         }
 
-        TransactionStatus transactionStatus = new TransactionStatus();
+        OperationStatus operationStatus = new OperationStatus();
 
-        transactionStatus.setId( dto.getId() );
-        transactionStatus.setCode( dto.getCode() );
-        transactionStatus.setName( dto.getName() );
+        operationStatus.setId( dto.getId() );
+        operationStatus.setCode( dto.getCode() );
+        operationStatus.setName( dto.getName() );
 
-        return transactionStatus;
+        return operationStatus;
     }
 
     @Override
-    public TransactionStatusDTO toTransactionStatusDTO(TransactionStatus entity) {
+    public TransactionStatusDTO toTransactionStatusDTO(OperationStatus entity) {
         if ( entity == null ) {
             return null;
         }
