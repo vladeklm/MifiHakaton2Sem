@@ -2,57 +2,57 @@ package it.globus.finaudit.mapper;
 
 import it.globus.finaudit.DTO.BankDTO;
 import it.globus.finaudit.DTO.CategoryDTO;
-import it.globus.finaudit.DTO.reportfilter.PersonTypeDTO;
-import it.globus.finaudit.DTO.reportfilter.TransactionStatusDTO;
-import it.globus.finaudit.DTO.reportfilter.TransactionTypeDTO;
+import it.globus.finaudit.DTO.ClientTypeDTO;
+import it.globus.finaudit.DTO.TransactionStatusDTO;
+import it.globus.finaudit.DTO.TransactionTypeDTO;
 import it.globus.finaudit.entity.Bank;
 import it.globus.finaudit.entity.Category;
+import it.globus.finaudit.entity.ClientType;
 import it.globus.finaudit.entity.OperationStatus;
 import it.globus.finaudit.entity.OperationType;
-import it.globus.finaudit.entity.PersonType;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-06T01:03:19+0300",
+    date = "2025-05-07T02:14:14+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
 public class DictionaryMapperImpl implements DictionaryMapper {
 
     @Override
-    public PersonType toPersonType(PersonTypeDTO dto) {
+    public ClientType toClientType(ClientTypeDTO dto) {
         if ( dto == null ) {
             return null;
         }
 
-        PersonType personType = new PersonType();
+        ClientType clientType = new ClientType();
 
-        personType.setId( dto.getId() );
-        personType.setCode( dto.getCode() );
-        personType.setName( dto.getName() );
+        clientType.setId( dto.getId() );
+        clientType.setName( dto.getName() );
+        clientType.setCode( dto.getCode() );
 
-        return personType;
+        return clientType;
     }
 
     @Override
-    public PersonTypeDTO toPersonTypeDTO(PersonType entity) {
+    public ClientTypeDTO toClientTypeDTO(ClientType entity) {
         if ( entity == null ) {
             return null;
         }
 
-        PersonTypeDTO personTypeDTO = new PersonTypeDTO();
+        ClientTypeDTO clientTypeDTO = new ClientTypeDTO();
 
-        personTypeDTO.setId( entity.getId() );
-        personTypeDTO.setCode( entity.getCode() );
-        personTypeDTO.setName( entity.getName() );
+        clientTypeDTO.setId( entity.getId() );
+        clientTypeDTO.setCode( entity.getCode() );
+        clientTypeDTO.setName( entity.getName() );
 
-        return personTypeDTO;
+        return clientTypeDTO;
     }
 
     @Override
-    public OperationType toTransactionType(TransactionTypeDTO dto) {
+    public OperationType toOperationType(TransactionTypeDTO dto) {
         if ( dto == null ) {
             return null;
         }
@@ -67,7 +67,7 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionTypeDTO toTransactionTypeDTO(OperationType entity) {
+    public TransactionTypeDTO toOperationTypeDTO(OperationType entity) {
         if ( entity == null ) {
             return null;
         }
@@ -82,7 +82,7 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public OperationStatus toTransactionStatus(TransactionStatusDTO dto) {
+    public OperationStatus toOperationStatus(TransactionStatusDTO dto) {
         if ( dto == null ) {
             return null;
         }
@@ -97,7 +97,7 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionStatusDTO toTransactionStatusDTO(OperationStatus entity) {
+    public TransactionStatusDTO toOperationStatusDTO(OperationStatus entity) {
         if ( entity == null ) {
             return null;
         }

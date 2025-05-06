@@ -19,14 +19,14 @@ public class OperationStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String code;
-
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private boolean isActual;
+
+    @Column(nullable = false, unique = true)
+    private String code;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "operationStatus")
