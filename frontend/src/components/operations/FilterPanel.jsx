@@ -18,7 +18,7 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
       transactionType,
       status,
       category,
-      ...advancedFilters
+      ...advancedFilters,
     });
   };
 
@@ -41,8 +41,8 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
       ...prev,
       amount: {
         ...prev.amount,
-        [name]: value
-      }
+        [name]: value,
+      },
     }));
   };
 
@@ -99,10 +99,7 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
         </div>
 
         <div className="filter-group">
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">Статус</option>
             <option value="Новая">Новая</option>
             <option value="Подтвержденная">Подтвержденная</option>
@@ -165,12 +162,44 @@ const FilterPanel = ({ onApplyFilters, onResetFilters, onAddTransaction }) => {
         </div>
       </div>
 
-      <button className="add-transaction-btn" onClick={onAddTransaction}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* <button className="add-transaction-btn" onClick={onAddTransaction}>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 5V19M5 12H19"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
         Добавить операцию
-      </button>
+      </button> */}
+      {onAddTransaction && (
+        <button className="add-transaction-btn" onClick={onAddTransaction}>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 5V19M5 12H19"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Добавить операцию
+        </button>
+      )}
     </div>
   );
 };

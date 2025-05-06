@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./MainLayout.css";
 import Dashboard from "../pages/Dashboard";
 import Operations from "./operations/Operations";
+import Reports from "../pages/Reports"; // Импортировал отчеты
 
 const MainLayout = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -19,9 +20,9 @@ const MainLayout = () => {
       case "dashboard":
         return <Dashboard />;
       case "operations":
-        return <Operations />
+        return <Operations />;
       case "reports":
-        return <div className="placeholder">Страница отчетов</div>;
+        return <Reports clientId={1} />; // поставил сюда отчеты. Пока не разобрался откуда тянется id клиента, ставлю заглушку.
       case "references":
         return <div className="placeholder">Страница справочников</div>;
       case "settings":
