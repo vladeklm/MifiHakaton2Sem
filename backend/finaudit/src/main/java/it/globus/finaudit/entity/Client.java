@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +20,10 @@ import java.util.List;
 public class Client {
 
     @Id
+    private Long id;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -48,5 +50,4 @@ public class Client {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }

@@ -12,38 +12,38 @@ public class ReportGeneratorService {
         this.reportGeneratorFactory = reportGeneratorFactory;
     }
 
-    public byte[] generateGeneralReport(String type, OperationFilter filter) {
+    public byte[] generateGeneralReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateGeneralReport(filter);
+        return reportGenerator.generateGeneralReport(filter, userId);
     }
 
-    public byte[] generatePieChartIncomeReport(String type, OperationFilter filter) {
+    public byte[] generatePieChartIncomeReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generatePieChartIncome(filter);
+        return reportGenerator.generatePieChartIncome(filter, userId);
     }
 
-    public byte[] generatePieChartWithdrawReport(String type, OperationFilter filter) {
+    public byte[] generatePieChartWithdrawReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generatePieChartWithdraw(filter);
+        return reportGenerator.generatePieChartWithdraw(filter, userId);
     }
 
-    public byte[] generateWeeklyDynamicsOperationsReport(String type, OperationFilter filter) {
+    public byte[] generateWeeklyDynamicsOperationsReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateWeeklyDynamicsOperationsReport(filter);
+        return reportGenerator.generateWeeklyDynamicsOperationsReport(filter, userId);
     }
 
-    public byte[] generateMonthlyDynamicsOperationsReport(String type, OperationFilter filter) {
+    public byte[] generateMonthlyDynamicsOperationsReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateMonthlyDynamicsOperationsReport(filter);
+        return reportGenerator.generateMonthlyDynamicsOperationsReport(filter, userId);
     }
 
-    public byte[] generateQuarterlyDynamicsOperationsReport(String type, OperationFilter filter) {
+    public byte[] generateQuarterlyDynamicsOperationsReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateQuarterlyDynamicsOperationsReport(filter);
+        return reportGenerator.generateQuarterlyDynamicsOperationsReport(filter, userId);
     }
 
-    public byte[] generateYearlyDynamicsOperationsReport(String type, OperationFilter filter) {
+    public byte[] generateYearlyDynamicsOperationsReport(String type, OperationFilter filter, Long userId) {
         ReportGenerator reportGenerator = reportGeneratorFactory.getReportGenerator(type);
-        return reportGenerator.generateYearlyDynamicsOperationsReport(filter);
+        return reportGenerator.generateYearlyDynamicsOperationsReport(filter, userId);
     }
 }

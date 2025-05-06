@@ -1,0 +1,30 @@
+.reports-page {
+    padding: 1.5rem;
+    width: 100%;
+  }
+  
+  .report-table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+  }
+  
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .report-table th, .report-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+  }
+  
+  .report-table th {
+    background: #f9f9f9;
+    color: #555;
+    font-weight: 600;
+  }
+  

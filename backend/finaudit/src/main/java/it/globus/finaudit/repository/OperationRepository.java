@@ -1,6 +1,8 @@
 package it.globus.finaudit.repository;
 
 import it.globus.finaudit.entity.Operation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +14,6 @@ public interface OperationRepository extends JpaRepository<Operation, Long> , Jp
 
     @EntityGraph("Operation.withAssociations")
     List<Operation> findAll(Specification<Operation> spec);
+
+    Page<Operation> findAllByClient_User_Id(Long userId, Pageable pageable);
 }

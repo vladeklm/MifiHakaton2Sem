@@ -38,4 +38,10 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public User(Long id, String login, Role role) {
+        this.id = id;
+        this.login = login;
+        this.role = role;
+    }
 }
