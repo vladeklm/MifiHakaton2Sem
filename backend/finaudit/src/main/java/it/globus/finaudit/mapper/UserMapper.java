@@ -1,4 +1,4 @@
-package it.globus.finaudit.util.mapper;
+package it.globus.finaudit.mapper;
 
 
 import it.globus.finaudit.DTO.AuthenticationDTO;

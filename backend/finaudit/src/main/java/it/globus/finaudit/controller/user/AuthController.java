@@ -2,11 +2,10 @@ package it.globus.finaudit.controller.user;
 
 
 import it.globus.finaudit.DTO.AuthenticationDTO;
-import it.globus.finaudit.entity.User;
 import it.globus.finaudit.security.UserDetailsImpl;
+import it.globus.finaudit.service.client.ClientService;
 import it.globus.finaudit.service.user.UserService;
 import it.globus.finaudit.util.JwtUtils;
-import it.globus.finaudit.util.mapper.UserMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +25,19 @@ import java.util.Map;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final ClientService clientService;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
-                          UserService userService, UserMapper userMapper) {
+                          UserService userService, ClientService clientService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
-        this.userService = userService;
-        this.userMapper = userMapper;
+        this.clientService = clientService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid AuthenticationDTO AuthenticationDTO) {
-        User user = userMapper.toUser(AuthenticationDTO);
-        userService.registerUser(user);
+    public ResponseEntity<?> register(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+        clientService.registerClient(authenticationDTO);
         return ResponseEntity.ok("Пользователь сохранен");
     }
 

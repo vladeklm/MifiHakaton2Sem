@@ -1,10 +1,8 @@
 package it.globus.finaudit.controller.report;
 
 import it.globus.finaudit.DTO.OperationFilter;
-import it.globus.finaudit.DTO.reportfilter.MonthlyOperationFilter;
-import it.globus.finaudit.DTO.reportfilter.QuarterlyOperationFilter;
-import it.globus.finaudit.DTO.reportfilter.WeeklyOperationFilter;
-import it.globus.finaudit.DTO.reportfilter.YearlyOperationFilter;
+import it.globus.finaudit.DTO.reportfilter.*;
+import it.globus.finaudit.mapper.OperationFilterMapper;
 import it.globus.finaudit.security.UserDetailsImpl;
 import it.globus.finaudit.service.report.ReportGeneratorService;
 import jakarta.validation.Valid;
@@ -19,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/report")
 public class ReportController {
     private final ReportGeneratorService reportGeneratorService;
+    private final OperationFilterMapper operationFilterMapper;
 
-    public ReportController(ReportGeneratorService reportGeneratorService) {
+    public ReportController(ReportGeneratorService reportGeneratorService, OperationFilterMapper operationFilterMapper) {
         this.reportGeneratorService = reportGeneratorService;
+        this.operationFilterMapper = operationFilterMapper;
     }
 
     @PostMapping("/general/{type}")
@@ -35,8 +35,9 @@ public class ReportController {
 
     @PostMapping("/pie_chart_income/{type}")
     public ResponseEntity<byte[]> generatePieChartIncomeReport(@PathVariable String type,
-                                                               @Valid @RequestBody OperationFilter filter,
+                                                               @Valid @RequestBody PeriodOperationFilter periodFilter,
                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generatePieChartIncomeReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "pie_chart_income", type);
@@ -44,8 +45,9 @@ public class ReportController {
 
     @PostMapping("/pie_chart_withdraw/{type}")
     public ResponseEntity<byte[]> generatePieChartWithdrawReport(@PathVariable String type,
-                                                                 @Valid @RequestBody OperationFilter filter,
+                                                                 @Valid @RequestBody PeriodOperationFilter periodFilter,
                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generatePieChartWithdrawReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "pie_chart_withdraw", type);
@@ -55,9 +57,10 @@ public class ReportController {
     @PostMapping("/weekly_dynamics_operations/{type}")
     public ResponseEntity<byte[]> generateWeeklyDynamicsOperationsReport(@PathVariable String type,
                                                                          @Valid @RequestBody
-                                                                         WeeklyOperationFilter filter,
+                                                                         WeeklyOperationFilter periodFilter,
                                                                          @AuthenticationPrincipal
                                                                              UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generateWeeklyDynamicsOperationsReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "weekly_dynamics_operations", type);
@@ -66,9 +69,10 @@ public class ReportController {
     @PostMapping("/monthly_dynamics_operations/{type}")
     public ResponseEntity<byte[]> generateMonthlyDynamicsOperationsReport(@PathVariable String type,
                                                                           @Valid @RequestBody
-                                                                          MonthlyOperationFilter filter,
+                                                                          MonthlyOperationFilter periodFilter,
                                                                           @AuthenticationPrincipal
                                                                               UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generateMonthlyDynamicsOperationsReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "monthly_dynamics_operations", type);
@@ -77,9 +81,10 @@ public class ReportController {
     @PostMapping("/quarterly_dynamics_operations/{type}")
     public ResponseEntity<byte[]> generateQuarterlyDynamicsOperationsReport(@PathVariable String type,
                                                                             @Valid @RequestBody
-                                                                            QuarterlyOperationFilter filter,
+                                                                            QuarterlyOperationFilter periodFilter,
                                                                             @AuthenticationPrincipal
                                                                                 UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generateQuarterlyDynamicsOperationsReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "quarterly_dynamics_operations", type);
@@ -88,9 +93,10 @@ public class ReportController {
     @PostMapping("/yearly_dynamics_operations/{type}")
     public ResponseEntity<byte[]> generateYearlyDynamicsOperationsReport(@PathVariable String type,
                                                                          @Valid @RequestBody
-                                                                         YearlyOperationFilter filter,
+                                                                         YearlyOperationFilter periodFilter,
                                                                          @AuthenticationPrincipal
                                                                              UserDetailsImpl userDetails) {
+        OperationFilter filter = operationFilterMapper.toOperationFilter(periodFilter);
         byte[] responseBytes = reportGeneratorService
                 .generateYearlyDynamicsOperationsReport(type, filter, userDetails.getUser().getId());
         return getResponseForReport(responseBytes, "yearly_dynamics_operations", type);

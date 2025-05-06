@@ -1,4 +1,4 @@
-package it.globus.finaudit.repository.specifications;
+package it.globus.finaudit.specification;
 
 import it.globus.finaudit.DTO.OperationFilter;
 import it.globus.finaudit.entity.Operation;
