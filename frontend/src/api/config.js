@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.NODE_ENV === 'development'
-        ? 'http://localhost:8080/api/v1/operations'
-        : '/api/v1/transactions',
+        ? 'http://localhost:8080/api/v1'
+        : '/api/v1',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -25,6 +25,17 @@ api.interceptors.response.use(
     }
     return Promise.reject(error);
   }
+);
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default api;

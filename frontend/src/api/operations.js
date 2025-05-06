@@ -1,25 +1,21 @@
 import api from './config';
 
 export const operationsApi = {
-  // Получение всех операций клиента одним запросом
-  getOperations: (clientId) => 
-    api.get('', { 
-      params: { 
+  getOperations: (clientId) =>
+    api.get('/operations', {
+      params: {
         clientId,
         page: 0,
         size: 10000
       }
     }),
 
-  // Получение одной операции по ID
-  getOperation: (id) => 
-    api.get(`/${id}`),
+  getOperation: (id) =>
+    api.get(`/operations/${id}`),
 
-  // Создание новой операции
-  createOperation: (operation) => 
-    api.post('', operation),
+  createOperation: (operation) =>
+    api.post('/operations', operation),
 
-  // Обновление данных операции
-  updateOperation: (id, operation) => 
-    api.put(`/change_data/${id}`, operation)
-}; 
+  updateOperation: (id, operation) =>
+    api.put(`/operations/change_data/${id}`, operation)
+};

@@ -1,35 +1,22 @@
 import React, { useState } from "react";
 import "./MainLayout.css";
-import Dashboard from "../pages/Dashboard";
-import Operations from "./operations/Operations";
-import Reports from "../pages/Reports"; // Импортировал отчеты
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+
+const menuItems = [
+  { id: "dashboard", label: "Дашборд", path: "/dashboard" },
+  { id: "operations", label: "Операции", path: "/operations" },
+  { id: "reports", label: "Отчеты", path: "/reports" },
+  { id: "references", label: "Справочники", path: "/references" },
+  { id: "settings", label: "Настройки", path: "/settings" },
+];
 
 const MainLayout = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
 
-  const menuItems = [
-    { id: "dashboard", label: "Дашборд" },
-    { id: "operations", label: "Операции" },
-    { id: "reports", label: "Отчеты" },
-    { id: "references", label: "Справочники" },
-    { id: "settings", label: "Настройки" },
-  ];
+  const navigate = useNavigate();
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "dashboard":
-        return <Dashboard />;
-      case "operations":
-        return <Operations />;
-      case "reports":
-        return <Reports clientId={1} />; // поставил сюда отчеты. Пока не разобрался откуда тянется id клиента, ставлю заглушку.
-      case "references":
-        return <div className="placeholder">Страница справочников</div>;
-      case "settings":
-        return <div className="placeholder">Страница настроек</div>;
-      default:
-      // return <Dashboard />;
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
   };
 
   return (
@@ -40,26 +27,26 @@ const MainLayout = () => {
         </div>
         <nav className="side-nav">
           {menuItems.map((item) => (
-            <button
+            <NavLink
               key={item.id}
-              className={`nav-button ${activeTab === item.id ? "active" : ""}`}
-              onClick={() => setActiveTab(item.id)}
+              to={item.path}
+              className={({ isActive }) => `nav-button ${isActive ? "active" : ""}`}
             >
               {item.label}
-            </button>
+            </NavLink>
           ))}
         </nav>
       </aside>
       <div className="content-wrapper">
         <header className="main-header">
-          <h1 className="page-title">
-            {menuItems.find((item) => item.id === activeTab)?.label}
-          </h1>
-          <button className="logout-button">
+          <h1 className="page-title">Финансовый менеджер</h1>
+          <button className="logout-button" onClick={handleLogout}>
             <span>Выйти</span>
           </button>
         </header>
-        <main className="main-content">{renderContent()}</main>
+        <main className="main-content">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

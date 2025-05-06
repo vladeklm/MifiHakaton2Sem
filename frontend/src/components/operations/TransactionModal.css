@@ -70,6 +70,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  position: relative;
 }
 
 .info-row .label {
@@ -202,14 +203,16 @@
   color: #1b5e20;
 }
 
-.status.платеж-удален {
+.status.платеж-удален,
+.status.возврат {
   background-color: #fbe9e7;
   color: #bf360c;
 }
 
-.status.возврат {
-  background-color: #fbe9e7;
-  color: #bf360c;
+.field-error {
+  font-size: 0.75rem;
+  color: #d32f2f;
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {
@@ -222,4 +225,8 @@
   .info-row .label {
     min-width: auto;
   }
-} 
+
+  .field-error {
+    position: static;
+  }
+}

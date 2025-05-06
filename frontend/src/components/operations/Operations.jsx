@@ -4,6 +4,7 @@ import TransactionModal from './TransactionModal';
 import FilterPanel from './FilterPanel';
 import { operationsApi } from '../../api/operations';
 import ConfirmModal from './ConfirmModal';
+import { getUserId } from '../../utils/authHelper';
 
 const PAGE_SIZE = 10;
 
@@ -24,13 +25,14 @@ const Operations = () => {
     inn: ''
   });
   const [operationToDelete, setOperationToDelete] = useState(null);
+  const clientId = getUserId();
 
   useEffect(() => {
     const fetchOperations = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await operationsApi.getOperations(1); // TODO: заменить 1 на реальный clientId
+        const response = await operationsApi.getOperations(clientId);
         setOperations(response.data.content);
       } catch (err) {
         setError('Ошибка при загрузке операций');
@@ -203,7 +205,7 @@ const Operations = () => {
         await operationsApi.createOperation(operationToSave);
       }
       setSelectedOperation(null);
-      const response = await operationsApi.getOperations(1);
+      const response = await operationsApi.getOperations(clientId);
       setOperations(response.data.content);
     } catch (err) {
       setError('Ошибка при сохранении операции');

@@ -91,6 +91,8 @@
   position: relative;
   font-weight: 500;
   letter-spacing: 0.3px;
+  text-decoration: none;
+
 }
 
 .nav-button::before {
