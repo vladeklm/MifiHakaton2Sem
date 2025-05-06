@@ -27,8 +27,10 @@ public class Client {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String secondName;
 
     private String patronymic;
