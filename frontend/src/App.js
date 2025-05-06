@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import MainLayout from './components/MainLayout';
@@ -8,7 +8,14 @@ import Operations from './components/operations/Operations';
 import Dashboard from './pages/Dashboard'
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem('authToken');
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  if (isAuthenticated === null) return null;
 
   return (
     <Router>
