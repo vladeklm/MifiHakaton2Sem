@@ -179,7 +179,7 @@ const Operations = () => {
       const operationToSave = {
         client: {
           user: {
-            id: updatedOperation.client?.user?.id || updatedOperation.clientUserId || 1
+            id: clientId
           }
         },
         operationType: { id: typeMap[updatedOperation.operationTypeName] },
@@ -189,7 +189,7 @@ const Operations = () => {
         dateTimeOperation: updatedOperation.dateTimeOperation,
         amount: Number(updatedOperation.amount),
         comment: updatedOperation.comment,
-        phoneNumber: updatedOperation.phoneNumber.replace(/\D/g, ''),
+        phoneNumber: updatedOperation.phoneNumber.replace(/[^+\d]/g, ''),
         inn: updatedOperation.inn,
         bankFromId: bankMap[updatedOperation.bankFromId],
         bankToId: bankMap[updatedOperation.bankToId],
