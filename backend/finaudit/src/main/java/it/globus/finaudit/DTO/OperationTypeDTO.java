@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class PersonTypeDTO {
+public class OperationTypeDTO {
     private Long id;
 
-    @NotBlank(message = "Код типа обязателен")
+    @NotBlank(message = "Код типа транзакции обязателен")
     private String code;
 
     @NotBlank(message = "Название типа обязательно")

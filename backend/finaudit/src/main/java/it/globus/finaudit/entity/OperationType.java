@@ -25,6 +25,9 @@ public class OperationType {
     @Column(nullable = false)
     private boolean isActual;
 
+    @Column(nullable = false, unique = true)
+    private String code;
+
     @ToString.Exclude
     @OneToMany(mappedBy = "operationType")
     private List<Operation> operations = new ArrayList<>();

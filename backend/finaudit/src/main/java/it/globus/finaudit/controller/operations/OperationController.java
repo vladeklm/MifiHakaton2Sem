@@ -1,6 +1,6 @@
 package it.globus.finaudit.controller.operations;
 
-import it.globus.finaudit.DTO.OperationDto;
+import it.globus.finaudit.DTO.OperationDTO;
 import it.globus.finaudit.entity.Operation;
 import it.globus.finaudit.service.operations.OperationService;
 
@@ -25,7 +25,7 @@ public class OperationController {
     }
 
     @GetMapping
-    public Page<OperationDto> getOperationList(
+    public Page<OperationDTO> getOperationList(
             @RequestParam Long clientId,
             Pageable pageable
     ) {
@@ -33,12 +33,12 @@ public class OperationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OperationDto> getOperation(@PathVariable Long id) {
+    public ResponseEntity<OperationDTO> getOperation(@PathVariable Long id) {
         return service.getOperation(id);
     }
 
     @PutMapping("/change_data/{id}")
-    public ResponseEntity<String> updateDataOperation(@RequestBody OperationDto dto, @PathVariable Long id) {
+    public ResponseEntity<String> updateDataOperation(@RequestBody OperationDTO dto, @PathVariable Long id) {
         return service.updateDataOperation(dto, id);
     }
 
