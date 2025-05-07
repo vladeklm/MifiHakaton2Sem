@@ -9,14 +9,16 @@ export const login = async (login, password) => {
   console.log('Login response:', response.data);
 
   const token = response.data["jwt-token"];
-  console.log('Token:', token);
   localStorage.setItem('authToken', token);
   return response.data;
 };
 
-export const register = async (login, password) => {
+export const register = async (login, password, firstName, patronymic, secondName) => {
     return api.post('/auth/register', {
       login,
-      password
+      password,
+      firstName,
+      patronymic,
+      secondName
     });
   };

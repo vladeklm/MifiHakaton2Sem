@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { operationsApi } from "../api/operations";
-import FilterPanel from "../components/operations/FilterPanel";
+import { operationsApi } from "../../api/operations";
+import FilterPanel from "../operations/FilterPanel";
 import "./Reports.css";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { getUserId } from '../../utils/authHelper';
 
 const Reports = () => {
   const [operations, setOperations] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [filters, setFilters] = useState({});
   const [loading, setLoading] = useState(false);
+  const clientId = getUserId();
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await operationsApi.getOperations(1);
+        const res = await operationsApi.getOperations(clientId);
         setOperations(res.data.content || []);
       } catch (err) {
         console.error("Ошибка при загрузке операций:", err);
