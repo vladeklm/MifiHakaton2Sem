@@ -10,16 +10,16 @@ import org.mapstruct.MappingTarget;
 public interface DictionaryMapper {
 
 
-    PersonType toPersonType(PersonTypeDTO dto);
-    PersonTypeDTO toPersonTypeDTO(PersonType entity);
+    ClientType toClientType(ClientTypeDTO dto);
+    ClientTypeDTO toClientTypeDTO(ClientType entity);
 
 
-    TransactionType toTransactionType(TransactionTypeDTO dto);
-    TransactionTypeDTO toTransactionTypeDTO(TransactionType entity);
+    OperationType toOperationType(TransactionTypeDTO dto);
+    TransactionTypeDTO toOperationTypeDTO(OperationType entity);
 
 
-    TransactionStatus toTransactionStatus(TransactionStatusDTO dto);
-    TransactionStatusDTO toTransactionStatusDTO(TransactionStatus entity);
+    OperationStatus toOperationStatus(TransactionStatusDTO dto);
+    TransactionStatusDTO toOperationStatusDTO(OperationStatus entity);
 
 
     Bank toBank(BankDTO dto);
@@ -30,19 +30,19 @@ public interface DictionaryMapper {
     CategoryDTO toCategoryDTO(Category entity);
 
 
-    default void updatePersonTypeFromDTO(PersonTypeDTO dto, @MappingTarget PersonType entity) {
+    default void updateClientTypeFromDTO(ClientTypeDTO dto, @MappingTarget ClientType entity) {
         if (dto == null) return;
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());
     }
 
-    default void updateTransactionTypeFromDTO(TransactionTypeDTO dto, @MappingTarget TransactionType entity) {
+    default void updateOperationTypeFromDTO(TransactionTypeDTO dto, @MappingTarget OperationType entity) {
         if (dto == null) return;
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());
     }
 
-    default void updateTransactionStatusFromDTO(TransactionStatusDTO dto, @MappingTarget TransactionStatus entity) {
+    default void updateOperationStatusFromDTO(TransactionStatusDTO dto, @MappingTarget OperationStatus entity) {
         if (dto == null) return;
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());

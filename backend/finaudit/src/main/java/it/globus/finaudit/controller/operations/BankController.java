@@ -1,4 +1,4 @@
-package it.globus.finaudit.controller.DictionaryControllers;
+package it.globus.finaudit.controller.operations;
 
 import it.globus.finaudit.DTO.BankDTO;
 import it.globus.finaudit.service.operations.BankService;

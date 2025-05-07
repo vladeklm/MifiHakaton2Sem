@@ -25,6 +25,9 @@ public class ClientType {
     @Column(nullable = false)
     private boolean isActual;
 
+    @Column(name = "code")
+    private String code;
+
     @ToString.Exclude
     @OneToMany(mappedBy = "clientType")
     private List<Operation> operations = new ArrayList<>();
