@@ -1,6 +1,7 @@
 package it.globus.finaudit.service.report;
 
 import it.globus.finaudit.repository.OperationRepository;
+import it.globus.finaudit.repository.OperationTypeRepository;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.HtmlExporter;
@@ -14,8 +15,10 @@ import java.io.OutputStream;
 
 @Component
 public class HtmlReportGenerator extends AbstractReportGenerator {
-    public HtmlReportGenerator(OperationRepository operationRepository, ReportTemplate reportTemplate) {
-        super(operationRepository, reportTemplate);
+
+    public HtmlReportGenerator(OperationRepository operationRepository, ReportTemplate reportTemplate,
+                               OperationTypeRepository operationTypeRepository) {
+        super(operationRepository, reportTemplate, operationTypeRepository);
     }
 
     @Override

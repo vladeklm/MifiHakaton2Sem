@@ -26,20 +26,20 @@ public class OperationSpecificationBuilder {
             spec = spec.and(OperationSpecifications.betweenDate(filter.getDateFrom(), filter.getDateTo()));
         }
 
-        if (filter.getStatus() != null) {
-            spec = spec.and(OperationSpecifications.equalStatus(filter.getStatus()));
+        if (filter.getStatusId() != null) {
+            spec = spec.and(OperationSpecifications.equalStatusId(filter.getStatusId()));
         }
 
-        if (filter.getOperationCategory() != null) {
-            spec = spec.and(OperationSpecifications.equalOperationCategory(filter.getOperationCategory()));
+        if (filter.getOperationCategoryId() != null) {
+            spec = spec.and(OperationSpecifications.equalOperationCategoryId(filter.getOperationCategoryId()));
         }
 
         if (filter.getInn() != null) {
             spec = spec.and(OperationSpecifications.equalInn(filter.getInn()));
         }
 
-        if (filter.getOperationType() != null) {
-            spec = spec.and(OperationSpecifications.equalOperationType(filter.getOperationType()));
+        if (filter.getOperationTypeId() != null) {
+            spec = spec.and(OperationSpecifications.equalOperationTypeId(filter.getOperationTypeId()));
         }
 
         // Обработка amount

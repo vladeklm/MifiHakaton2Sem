@@ -1,7 +1,7 @@
 package it.globus.finaudit.service.client;
 
 
-import it.globus.finaudit.DTO.AuthenticationDTO;
+import it.globus.finaudit.DTO.RegisterDTO;
 import it.globus.finaudit.entity.Client;
 import it.globus.finaudit.entity.User;
 import it.globus.finaudit.mapper.ClientMapper;
@@ -23,9 +23,9 @@ public class ClientService {
     }
 
     @Transactional
-    public void registerClient(AuthenticationDTO authenticationDTO) {
-        User user = userService.registerUser(authenticationDTO);
-        Client client = clientMapper.toClient(authenticationDTO);
+    public void registerClient(RegisterDTO registerDTO) {
+        User user = userService.registerUser(registerDTO);
+        Client client = clientMapper.toClient(registerDTO);
         client.setUser(user);
         clientRepository.save(client);
     }

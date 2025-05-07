@@ -10,11 +10,11 @@ public interface OperationFilterMapper {
 
     @Mapping(target = "bankFromId", ignore = true)
     @Mapping(target = "bankToId", ignore = true)
-    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "statusId", ignore = true)
     @Mapping(target = "inn", ignore = true)
     @Mapping(target = "minAmount", ignore = true)
     @Mapping(target = "maxAmount", ignore = true)
-    @Mapping(target = "operationType", ignore = true)
-    @Mapping(target = "operationCategory", ignore = true)
+    @Mapping(target = "operationTypeId", ignore = true)
+    @Mapping(target = "operationCategoryId", ignore = true)
     OperationFilter toOperationFilter(PeriodOperationFilter filter);
 }

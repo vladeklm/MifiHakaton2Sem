@@ -1,7 +1,7 @@
 package it.globus.finaudit.mapper;
 
 
-import it.globus.finaudit.DTO.AuthenticationDTO;
+import it.globus.finaudit.DTO.RegisterDTO;
 import it.globus.finaudit.entity.Client;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +18,5 @@ public interface ClientMapper {
     @Mapping(target = "operations", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Client toClient(AuthenticationDTO dto);
+    Client toClient(RegisterDTO dto);
 }

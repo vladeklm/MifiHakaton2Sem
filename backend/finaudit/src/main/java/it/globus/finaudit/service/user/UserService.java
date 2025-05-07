@@ -1,7 +1,7 @@
 package it.globus.finaudit.service.user;
 
 
-import it.globus.finaudit.DTO.AuthenticationDTO;
+import it.globus.finaudit.DTO.RegisterDTO;
 import it.globus.finaudit.entity.Role;
 import it.globus.finaudit.entity.User;
 import it.globus.finaudit.mapper.UserMapper;
@@ -27,8 +27,8 @@ public class UserService {
     }
 
     @Transactional
-    public User registerUser(AuthenticationDTO authenticationDTO) {
-        User user = userMapper.toUser(authenticationDTO);
+    public User registerUser(RegisterDTO registerDTO) {
+        User user = userMapper.toUser(registerDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ROLE_USER);
         return userRepository.save(user);

@@ -1,6 +1,9 @@
 package it.globus.finaudit.DTO;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +26,8 @@ public class OperationFilter {
 
     private LocalDate dateTo;
 
-    @Size(max = 50, message = "Status must be less than 50 characters")
-    private String status;
+    @PositiveOrZero(message = "Status ID должен быть положительным или нулевым")
+    private Long statusId;
 
     @Pattern(regexp = "\\d{11}", message = "ИНН должен содержать только 11 цифр")
     private String inn;
@@ -35,11 +38,11 @@ public class OperationFilter {
     @DecimalMin(value = "0.0", inclusive = false, message = "Max amount must be greater than 0")
     private BigDecimal maxAmount;
 
-    @Size(max = 50, message = "Operation type must be less than 50 characters")
-    private String operationType;
+    @PositiveOrZero(message = "Operation type ID должен быть положительным или нулевым")
+    private Long operationTypeId;
 
-    @Size(max = 50, message = "Operation category must be less than 50 characters")
-    private String operationCategory;
+    @PositiveOrZero(message = "Operation category ID должен быть положительным или нулевым")
+    private Long operationCategoryId;
 
     @AssertTrue(message = "dateFrom должна быть предшествующей dateTo или равной ей")
     public boolean isDateRangeValid() {
