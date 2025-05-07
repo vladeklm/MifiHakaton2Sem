@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "operations")
+@EntityListeners(OperationAuditListener.class)  // Добавляем слушатель
 public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,19 +39,39 @@ public class Operation {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operation_category_id", nullable = false)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id",
+            scope = OperationCategory.class
+    )
     private OperationCategory operationCategory;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operation_type_id", nullable = false)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id",
+            scope = OperationType.class
+    )
     private OperationType operationType;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_type_id", nullable = false)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id",
+            scope = ClientType.class
+    )
     private ClientType clientType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operation_status_id", nullable = false)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id",
+            scope = OperationStatus.class
+    )
     private OperationStatus operationStatus;
 
     @Column(nullable = false)
