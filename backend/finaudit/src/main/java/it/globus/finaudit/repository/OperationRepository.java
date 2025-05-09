@@ -28,4 +28,5 @@ public interface OperationRepository extends JpaRepository<Operation, Long> , Jp
             "ORDER BY COUNT(o.id) DESC")
     List<AccountInfoDTO> findAccountsByClientAndType(@Param("clientId") Long clientId,
                                                      @Param("isContragentAccount") boolean isContragentAccount);
+    List<Operation> findByClientId(Long clientId);
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
 
@@ -22,7 +23,6 @@ public class AccountController {
             @RequestParam boolean isContragentAccount,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        Long clientId = userDetails.getUser().getId();
-        return accountService.getAccountsByClient(clientId, isContragentAccount);
+        return accountService.getAccountsByClient(userDetails.getUser().getId(), isContragentAccount);
     }
 }
