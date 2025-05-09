@@ -15,7 +15,6 @@ public class Dictionary {
     @Column
     private String description;
 
-    // Геттеры
     public Long getId() {
         return id;
     }
@@ -28,7 +27,6 @@ public class Dictionary {
         return description;
     }
 
-    // Сеттеры
     public void setId(Long id) {
         this.id = id;
     }
