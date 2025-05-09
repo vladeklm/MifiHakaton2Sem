@@ -1,6 +1,7 @@
 package it.globus.finaudit.DTO;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,21 +18,16 @@ public class OperationDTO {
 
     private Long id;
 
-    private Long clientId;
+    private String bankFromName;
 
-    @PositiveOrZero(message = "BankFromId должен быть положительным или нулевым")
-    private Long bankFromId;
+    private String bankToName;
 
-    @PositiveOrZero(message = "BankToId должен быть положительным или нулевым")
-    private Long bankToId;
+    private Long bankRecipientAccountNumber;
 
-    private Long bankRecipientAccountId;
-
-    private Long bankAccountId;
+    private Long bankAccountNumber;
 
     private String clientTypeName;
 
-    @Size(max = 50, message = "Status must be less than 50 characters")
     private String operationStatusName;
 
     @Pattern(regexp = "\\d{11}", message = "ИНН должен содержать только 11 цифр")
@@ -39,24 +35,18 @@ public class OperationDTO {
 
     private BigDecimal amount;
 
-    @Pattern(regexp = "^(8|\\+7)\\d{10}$", message = "Телефон должен начинаться с 8 или +7 и содержать 11 цифр")
+    @Pattern(regexp = "^(8|\\+7)\\d{10}$",
+            message = "Телефон должен начинаться с 8 или +7 и содержать 11 цифр (например: 89991234567 или +79991234567)")
     private String phoneNumber;
 
-    @Size(max = 50, message = "Operation type must be less than 50 characters")
     private String operationTypeName;
 
-    @Size(max = 50, message = "Operation category must be less than 50 characters")
     private String operationCategoryName;
 
     @Size(max = 500, message = "Комментарий не должен превышать 500 символов")
     private String comment;
 
-    @NotNull
-    @Positive
-    private String operationTypeCode;
-    private String statusCode;
-    private String senderBank;
-    private String receiverBank;
+    private String statusName;
 
     private LocalDateTime dateTimeOperation;
 }

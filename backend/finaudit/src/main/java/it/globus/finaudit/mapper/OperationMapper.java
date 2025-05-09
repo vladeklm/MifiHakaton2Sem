@@ -13,20 +13,21 @@ import java.util.List;
 public interface OperationMapper {
 
     // To DTO
-    @Mapping(source = "client.user.id", target = "clientId")
     @Mapping(source = "operationCategory.name", target = "operationCategoryName")
     @Mapping(source = "operationType.name", target = "operationTypeName")
     @Mapping(source = "operationStatus.name", target = "operationStatusName")
     @Mapping(source = "clientType.name", target = "clientTypeName")
-    @Mapping(source = "bankAccount.id", target = "bankAccountId")
-    @Mapping(target = "operationTypeCode", source = "operationType.code")
-    @Mapping(target = "statusCode", source = "operationStatus.code")
+    @Mapping(source = "bankAccount.number", target = "bankAccountNumber")
+    @Mapping(source = "bankRecipientAccount.number", target = "bankRecipientAccountNumber")
+    @Mapping(target = "statusName", source = "operationStatus.name")
+    @Mapping(target = "bankFromName", source = "bankFrom.name")
+    @Mapping(target = "bankToName", source = "bankTo.name")
     OperationDTO toDto(Operation operation);
 
     // To Entity
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "operationType", source = "operationTypeCode", qualifiedByName = "codeToType")
-    @Mapping(target = "operationStatus", source = "statusCode", qualifiedByName = "codeToStatus")
+    @Mapping(target = "operationType", source = "operationTypeName", qualifiedByName = "codeToType")
+    @Mapping(target = "operationStatus", source = "statusName", qualifiedByName = "codeToStatus")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Operation toEntity(OperationDTO dto);

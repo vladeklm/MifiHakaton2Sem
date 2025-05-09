@@ -20,10 +20,10 @@ import java.util.List;
 public class Client {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @MapsId
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

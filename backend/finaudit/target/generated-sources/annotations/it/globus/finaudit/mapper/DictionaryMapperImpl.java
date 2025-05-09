@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-07T02:14:14+0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
+    date = "2025-05-09T19:40:37+0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.7 (Microsoft)"
 )
 @Component
 public class DictionaryMapperImpl implements DictionaryMapper {
@@ -60,8 +60,8 @@ public class DictionaryMapperImpl implements DictionaryMapper {
         OperationType operationType = new OperationType();
 
         operationType.setId( dto.getId() );
-        operationType.setCode( dto.getCode() );
         operationType.setName( dto.getName() );
+        operationType.setCode( dto.getCode() );
 
         return operationType;
     }
@@ -90,8 +90,8 @@ public class DictionaryMapperImpl implements DictionaryMapper {
         OperationStatus operationStatus = new OperationStatus();
 
         operationStatus.setId( dto.getId() );
-        operationStatus.setCode( dto.getCode() );
         operationStatus.setName( dto.getName() );
+        operationStatus.setCode( dto.getCode() );
 
         return operationStatus;
     }

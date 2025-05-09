@@ -1,6 +1,6 @@
 package it.globus.finaudit.repository;
 
-import it.globus.finaudit.entity.Operation;
+import it.globus.finaudit.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,4 +16,5 @@ public interface OperationRepository extends JpaRepository<Operation, Long> , Jp
     List<Operation> findAll(Specification<Operation> spec);
 
     Page<Operation> findAllByClient_User_Id(Long userId, Pageable pageable);
+
 }

@@ -7,13 +7,20 @@ import it.globus.finaudit.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OperationService {
@@ -27,102 +34,173 @@ public class OperationService {
     private final ClientTypeRepository clientTypeRepository;
     private final OperationStatusRepository operationStatusRepository;
     private final BankAccountRepository bankAccountRepository;
+    private final BankRepository bankRepository;
+
+    public ResponseEntity<?> createOperation(OperationDTO dto) {
+        try {
+            Operation validDataOp = validate(dto);
+            saveOperation(validDataOp, dto);
+            return ResponseEntity.ok(Map.of("message", "success"));
+        } catch (EntityNotFoundException | DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
 
     @Transactional
-    public ResponseEntity<String> createOperation(Operation operation) {
+    public void saveOperation(Operation validDataOp, OperationDTO dto) {
+        Operation operation = Operation.builder()
+                .operationCategory(validDataOp.getOperationCategory())
+                .operationType(validDataOp.getOperationType())
+                .operationStatus(validDataOp.getOperationStatus())
+                .clientType(validDataOp.getClientType())
+                .bankAccount(validDataOp.getBankAccount())
+                .bankFrom(validDataOp.getBankFrom())
+                .bankTo(validDataOp.getBankTo())
+                .bankRecipientAccount(validDataOp.getBankRecipientAccount())
+                .client(validDataOp.getClient())
+                .inn(dto.getInn())
+                .phoneNumber(dto.getPhoneNumber())
+                .amount(dto.getAmount())
+                .comment(dto.getComment())
+                .dateTimeOperation(dto.getDateTimeOperation())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
-        User user = userRepository.findById(operation.getClient().getUser().getId())
+        repository.save(operation);
+    }
+
+    public Operation validate(OperationDTO dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+
+        User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Client client = clientRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
 
-        OperationCategory operationCategory = operationCategoryRepository.findById(operation.getOperationCategory().getId())
+        OperationCategory operationCategory = (OperationCategory) operationCategoryRepository.findByName(dto.getOperationCategoryName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationCategory not found"));
 
-        OperationType operationType = operationTypeRepository.findById(operation.getOperationType().getId())
+        OperationType operationType = (OperationType) operationTypeRepository.findByName(dto.getOperationTypeName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationType not found"));
 
-        ClientType clientType = clientTypeRepository.findById(operation.getClientType().getId())
-                .orElseThrow(() -> new EntityNotFoundException("ClientType not found"));
-
-        OperationStatus operationStatus = operationStatusRepository.findById(operation.getOperationStatus().getId())
+        OperationStatus operationStatus = (OperationStatus) operationStatusRepository.findByName(dto.getStatusName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationStatus not found"));
 
-        BankAccount bankAccount = bankAccountRepository.findById(operation.getBankAccount().getId())
-                .orElseThrow(() -> new EntityNotFoundException("BankAccount not found"));
+        ClientType clientType = (ClientType) clientTypeRepository.findByName(dto.getClientTypeName())
+                .orElseThrow(() -> new EntityNotFoundException("ClientType not found"));
 
-        var newOperation = Operation.builder()
-                .dateTimeOperation(operation.getDateTimeOperation())
+        boolean isIncoming = operationType.getName().equalsIgnoreCase("Поступление");
+
+        Bank bankFrom = null;
+
+        if (!isIncoming) {
+            bankFrom = (Bank) bankRepository.findByName(dto.getBankFromName())
+                    .orElseThrow(() -> new EntityNotFoundException("Bank From not found"));
+        }
+
+        Bank bankTo = (Bank) bankRepository.findByName(dto.getBankToName())
+                .orElseThrow(() -> new EntityNotFoundException("Bank To not found"));
+
+        Bank mainBank = isIncoming ? bankTo : bankFrom;
+
+        BankAccount bankAccount;
+        Optional<BankAccount> existingAccountByNumber = bankAccountRepository.findByNumber(dto.getBankAccountNumber().toString());
+
+        if (existingAccountByNumber.isPresent()) {
+            BankAccount existing = existingAccountByNumber.get();
+            if (!existing.getBank().equals(mainBank)) {
+                // Такой номер уже есть, но в другом банке — ошибка
+                throw new DataIntegrityViolationException("Bank account number already exists in another bank");
+            }
+            bankAccount = existing;
+        } else {
+            // Такого номера нет вообще — можно создать
+            bankAccount = bankAccountRepository.save(BankAccount.builder()
+                    .bank(mainBank)
+                    .client(client)
+                    .number(dto.getBankAccountNumber().toString())
+                    .build());
+        }
+
+        BankAccount bankRecipientAccount = null;
+        if (!isIncoming && dto.getBankRecipientAccountNumber() != null) {
+            String recipientNumber = String.valueOf(dto.getBankRecipientAccountNumber());
+
+            Optional<BankAccount> existingRecipientAccount = bankAccountRepository.findByNumber(recipientNumber);
+
+            if (existingRecipientAccount.isPresent()) {
+                BankAccount existing = existingRecipientAccount.get();
+                if (!existing.getBank().equals(bankTo)) {
+                    throw new DataIntegrityViolationException("Recipient account number already exists in another bank");
+                }
+                bankRecipientAccount = existing;
+            } else {
+                // Счёт ещё не существует — создаём ничейный (без клиента)
+                bankRecipientAccount = bankAccountRepository.save(
+                        BankAccount.builder()
+                                .bank(bankTo)
+                                .number(recipientNumber)
+                                .client(null) // Ничейный
+                                .build()
+                );
+            }
+        }
+
+        return Operation.builder()
                 .operationCategory(operationCategory)
-                .operationStatus(operationStatus)
                 .operationType(operationType)
-                .amount(operation.getAmount())
-                .bankAccount(bankAccount)
-                .createdAt(operation.getCreatedAt())
-                .bankFromId(operation.getBankFromId())
-                .bankToId(operation.getBankToId())
-                .bankRecipientAccountId(operation.getBankRecipientAccountId())
-                .client(client)
-                .inn(operation.getInn())
-                .comment(operation.getComment())
+                .operationStatus(operationStatus)
                 .clientType(clientType)
-                .phoneNumber(operation.getPhoneNumber())
-                .updatedAt(operation.getUpdatedAt())
+                .bankAccount(bankAccount)
+                .bankRecipientAccount(bankRecipientAccount)
+                .bankTo(bankTo)
+                .bankFrom(bankFrom)
+                .client(client)
                 .build();
-
-        repository.save(newOperation);
-
-        return ResponseEntity.ok("success");
     }
 
-    public Page<OperationDTO> getOperationList(Long clientId, Pageable pageable) {
+    public Page<OperationDTO> getOperationsByClientId(Long clientId, Pageable pageable) {
 
         Page<Operation> operationPage = repository.findAllByClient_User_Id(clientId, pageable);
 
         return operationPage.map(mapper::toDto);
     }
 
-    public ResponseEntity<OperationDTO> getOperation(Long id) {
+    public ResponseEntity<OperationDTO> getOperationById(Long id) {
         Optional<Operation> operation = repository.findById(id);
+
         return operation.map(op -> ResponseEntity.ok(mapper.toDto(op)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<String> updateDataOperation(OperationDTO dto, Long id) {
-
-        Optional<Operation> optionalOperation = repository.findById(id);
-        if (optionalOperation.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Operation operation = optionalOperation.get();
-
-        if (dto.getAmount() != null) operation.setAmount(dto.getAmount());
-        if (dto.getBankFromId() != null) operation.setBankFromId(dto.getBankFromId());
-        if (dto.getBankToId() != null) operation.setBankToId(dto.getBankToId());
-        if (dto.getPhoneNumber() != null) operation.setPhoneNumber(dto.getPhoneNumber());
-        if (dto.getInn() != null) operation.setInn(dto.getInn());
-        if (dto.getComment() != null) operation.setComment(dto.getComment());
-        if (dto.getDateTimeOperation() != null) operation.setDateTimeOperation(dto.getDateTimeOperation());
-        if (dto.getBankRecipientAccountId() != null) operation.setBankRecipientAccountId(dto.getBankRecipientAccountId());
-
-        if (dto.getOperationCategoryName() != null && operation.getOperationCategory() != null) {
-            operation.getOperationCategory().setName(dto.getOperationCategoryName());
-        }
-        if (dto.getOperationTypeName() != null && operation.getOperationType() != null) {
-            operation.getOperationType().setName(dto.getOperationTypeName());
-        }
-        if (dto.getClientTypeName() != null && operation.getClientType() != null) {
-            operation.getClientType().setName(dto.getClientTypeName());
-        }
-        if (dto.getOperationStatusName() != null && operation.getOperationStatus() != null) {
-            operation.getOperationStatus().setName(dto.getOperationStatusName());
-        }
-
-        repository.save(operation);
-
-        return ResponseEntity.ok("Операция успешно обновлена");
+    public ResponseEntity<String> updateDataOperation(Operation updatedOp, Long id) {
+        return repository.findById(id)
+                .map(existingOp -> {
+                    updateOperationFields(existingOp, updatedOp);
+                    existingOp.setUpdatedAt(LocalDateTime.now());
+                    repository.save(existingOp);
+                    return ResponseEntity.ok("Операция успешно обновлена");
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    private void updateOperationFields(Operation existing, Operation updated) {
+        if (updated.getAmount() != null) existing.setAmount(updated.getAmount());
+        if (updated.getBankFrom() != null) existing.setBankFrom(updated.getBankFrom());
+        if (updated.getBankTo() != null) existing.setBankTo(updated.getBankTo());
+        if (updated.getPhoneNumber() != null) existing.setPhoneNumber(updated.getPhoneNumber());
+        if (updated.getInn() != null) existing.setInn(updated.getInn());
+        if (updated.getComment() != null) existing.setComment(updated.getComment());
+        if (updated.getDateTimeOperation() != null) existing.setDateTimeOperation(updated.getDateTimeOperation());
+        if (updated.getBankRecipientAccount() != null) existing.setBankRecipientAccount(updated.getBankRecipientAccount());
+        if (updated.getOperationCategory() != null) existing.setOperationCategory(updated.getOperationCategory());
+        if (updated.getOperationType() != null) existing.setOperationType(updated.getOperationType());
+        if (updated.getClientType() != null) existing.setClientType(updated.getClientType());
+        if (updated.getOperationStatus() != null) existing.setOperationStatus(updated.getOperationStatus());
+    }
+
 
 }
