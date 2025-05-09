@@ -29,10 +29,10 @@ public class OperationSpecifications {
 
     }
 
-    public static Specification<Operation> equalStatus(String status) {
+    public static Specification<Operation> equalStatusId(Long statusId) {
         return (root, query, criteriaBuilder) -> {
-            if (status == null) return null;
-            return criteriaBuilder.equal(root.get("operationStatus").get("name"), status);
+            if (statusId == null) return null;
+            return criteriaBuilder.equal(root.get("operationStatus").get("id"), statusId);
         };
     }
 
@@ -54,18 +54,17 @@ public class OperationSpecifications {
                 criteriaBuilder.equal(root.get("inn"), inn);
     }
 
-    public static Specification<Operation> equalOperationCategory(String operationCategory) {
+    public static Specification<Operation> equalOperationCategoryId(Long operationCategoryId) {
         return (root, query, criteriaBuilder) -> {
-            if (operationCategory == null) return null;
-            return criteriaBuilder.equal(root.get("operationCategory").get("name"), operationCategory);
+            if (operationCategoryId == null) return null;
+            return criteriaBuilder.equal(root.get("operationCategory").get("id"), operationCategoryId);
         };
     }
 
-    public static Specification<Operation> equalOperationType(String operationType) {
+    public static Specification<Operation> equalOperationTypeId(Long operationTypeId) {
         return (root, query, criteriaBuilder) -> {
-            if (operationType == null) return null;
-            return criteriaBuilder.equal(root.get("operationType").get("name"), operationType);
+            if (operationTypeId == null) return null;
+            return criteriaBuilder.equal(root.get("operationType").get("id"), operationTypeId);
         };
     }
-
 }

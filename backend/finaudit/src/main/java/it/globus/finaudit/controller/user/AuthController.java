@@ -1,10 +1,10 @@
 package it.globus.finaudit.controller.user;
 
 
-import it.globus.finaudit.DTO.AuthenticationDTO;
+import it.globus.finaudit.DTO.LoginDto;
+import it.globus.finaudit.DTO.RegisterDTO;
 import it.globus.finaudit.security.UserDetailsImpl;
 import it.globus.finaudit.service.client.ClientService;
-import it.globus.finaudit.service.user.UserService;
 import it.globus.finaudit.util.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +29,24 @@ public class AuthController {
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
-                          UserService userService, ClientService clientService) {
+                          ClientService clientService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.clientService = clientService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
-        clientService.registerClient(authenticationDTO);
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO registerDTO) {
+        clientService.registerClient(registerDTO);
         return ResponseEntity.ok("Пользователь сохранен");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<?> authenticate(@RequestBody LoginDto loginDto) {
         try {
             Authentication authentication = authenticationManager.
-                    authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.getLogin(),
-                            authenticationDTO.getPassword()));
+                    authenticate(new UsernamePasswordAuthenticationToken(loginDto.getLogin(),
+                            loginDto.getPassword()));
             var userDetails = (UserDetailsImpl) authentication.getPrincipal();
             String token = jwtUtils.generateJwtToken(userDetails);
             return ResponseEntity.ok().body(Map.of("jwt-token", token));
