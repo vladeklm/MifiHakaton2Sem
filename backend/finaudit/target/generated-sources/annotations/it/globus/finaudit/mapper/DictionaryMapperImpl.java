@@ -3,8 +3,8 @@ package it.globus.finaudit.mapper;
 import it.globus.finaudit.DTO.BankDTO;
 import it.globus.finaudit.DTO.CategoryDTO;
 import it.globus.finaudit.DTO.ClientTypeDTO;
-import it.globus.finaudit.DTO.TransactionStatusDTO;
-import it.globus.finaudit.DTO.TransactionTypeDTO;
+import it.globus.finaudit.DTO.OperationStatusDTO;
+import it.globus.finaudit.DTO.OperationTypeDTO;
 import it.globus.finaudit.entity.Bank;
 import it.globus.finaudit.entity.Category;
 import it.globus.finaudit.entity.ClientType;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-09T00:16:40+0300",
+    date = "2025-05-09T20:44:32+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -52,7 +52,7 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public OperationType toOperationType(TransactionTypeDTO dto) {
+    public OperationType toOperationType(OperationTypeDTO dto) {
         if ( dto == null ) {
             return null;
         }
@@ -67,22 +67,22 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionTypeDTO toOperationTypeDTO(OperationType entity) {
+    public OperationTypeDTO toOperationTypeDTO(OperationType entity) {
         if ( entity == null ) {
             return null;
         }
 
-        TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+        OperationTypeDTO operationTypeDTO = new OperationTypeDTO();
 
-        transactionTypeDTO.setId( entity.getId() );
-        transactionTypeDTO.setCode( entity.getCode() );
-        transactionTypeDTO.setName( entity.getName() );
+        operationTypeDTO.setId( entity.getId() );
+        operationTypeDTO.setCode( entity.getCode() );
+        operationTypeDTO.setName( entity.getName() );
 
-        return transactionTypeDTO;
+        return operationTypeDTO;
     }
 
     @Override
-    public OperationStatus toOperationStatus(TransactionStatusDTO dto) {
+    public OperationStatus toOperationStatus(OperationStatusDTO dto) {
         if ( dto == null ) {
             return null;
         }
@@ -97,18 +97,18 @@ public class DictionaryMapperImpl implements DictionaryMapper {
     }
 
     @Override
-    public TransactionStatusDTO toOperationStatusDTO(OperationStatus entity) {
+    public OperationStatusDTO toOperationStatusDTO(OperationStatus entity) {
         if ( entity == null ) {
             return null;
         }
 
-        TransactionStatusDTO transactionStatusDTO = new TransactionStatusDTO();
+        OperationStatusDTO operationStatusDTO = new OperationStatusDTO();
 
-        transactionStatusDTO.setId( entity.getId() );
-        transactionStatusDTO.setCode( entity.getCode() );
-        transactionStatusDTO.setName( entity.getName() );
+        operationStatusDTO.setId( entity.getId() );
+        operationStatusDTO.setCode( entity.getCode() );
+        operationStatusDTO.setName( entity.getName() );
 
-        return transactionStatusDTO;
+        return operationStatusDTO;
     }
 
     @Override

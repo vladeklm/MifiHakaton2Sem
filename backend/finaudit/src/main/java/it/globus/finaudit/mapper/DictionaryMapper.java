@@ -14,12 +14,12 @@ public interface DictionaryMapper {
     ClientTypeDTO toClientTypeDTO(ClientType entity);
 
 
-    OperationType toOperationType(TransactionTypeDTO dto);
-    TransactionTypeDTO toOperationTypeDTO(OperationType entity);
+    OperationType toOperationType(OperationTypeDTO dto);
+    OperationTypeDTO toOperationTypeDTO(OperationType entity);
 
 
-    OperationStatus toOperationStatus(TransactionStatusDTO dto);
-    TransactionStatusDTO toOperationStatusDTO(OperationStatus entity);
+    OperationStatus toOperationStatus(OperationStatusDTO dto);
+    OperationStatusDTO toOperationStatusDTO(OperationStatus entity);
 
 
     Bank toBank(BankDTO dto);
@@ -36,13 +36,13 @@ public interface DictionaryMapper {
         entity.setName(dto.getName());
     }
 
-    default void updateOperationTypeFromDTO(TransactionTypeDTO dto, @MappingTarget OperationType entity) {
+    default void updateOperationTypeFromDTO(OperationTypeDTO dto, @MappingTarget OperationType entity) {
         if (dto == null) return;
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());
     }
 
-    default void updateOperationStatusFromDTO(TransactionStatusDTO dto, @MappingTarget OperationStatus entity) {
+    default void updateOperationStatusFromDTO(OperationStatusDTO dto, @MappingTarget OperationStatus entity) {
         if (dto == null) return;
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());
