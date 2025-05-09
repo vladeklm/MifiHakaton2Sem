@@ -93,4 +93,25 @@ public class Operation {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "bank_recipient_account")
+    private String bankRecipientAccount;
+
+    @Column(name = "recipient_bank_name")
+    private String recipientBankName;
+
+    public String getBankName() {
+        return this.bankName;
+    }
+
+    public String getBankRecipientAccount() {
+        return this.bankRecipientAccount;
+    }
+
+    public String getRecipientBankName() {
+        return this.recipientBankName;
+    }
+
 }
