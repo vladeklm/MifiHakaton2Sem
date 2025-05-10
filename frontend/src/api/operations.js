@@ -17,5 +17,21 @@ export const operationsApi = {
     api.post('/operations', operation),
 
   updateOperation: (id, operation) =>
-    api.put(`/operations/change_data/${id}`, operation)
+    api.put(`/operations/change_data/${id}`, operation),
+
+  getClientTypes: () => 
+    api.get('/operations/Client-types'),
+  
+  getStatuses: () => 
+    api.get('/api/transaction-types'),
+
+  getBanks: () => 
+    api.get('/banks'),
+
+  getClientAccounts: (isContragentAccount) =>
+    api.get('/accounts', {
+      params: { isContragentAccount }
+    }),
+
+  getCategories: () => api.get('/categories')
 };

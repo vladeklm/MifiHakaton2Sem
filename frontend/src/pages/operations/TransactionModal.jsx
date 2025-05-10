@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './TransactionModal.css';
 import InputMask from 'react-input-mask';
 
-const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = false }) => {
+const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = false, banks = [], clientAccounts = [], recipientAccounts = [], categories = [], clientTypes = [] }) => {
   const [isEditing, setIsEditing] = useState(isEditingInitial);
   const [editedData, setEditedData] = useState(() => {
     if (!transaction) return {};
@@ -138,14 +138,11 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                       onChange={handleChange}
                     >
                       <option value="">Выберите категорию</option>
-                      <option value="Зарплата">Зарплата</option>
-                      <option value="Пополнение счета">Пополнение счета</option>
-                      <option value="Возврат средств">Возврат средств</option>
-                      <option value="Налоговый вычет">Налоговый вычет</option>
-                      <option value="Перевод между счетами">Перевод между счетами</option>
-                      <option value="Оплата услуг">Оплата услуг</option>
-                      <option value="Кредитный платеж">Кредитный платеж</option>
-                      <option value="Налоговый платеж">Налоговый платеж</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))}
                     </select>
                     {errors.operationCategoryName && <div className="field-error">{errors.operationCategoryName}</div>}
                   </div>
@@ -167,8 +164,11 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                       onChange={handleChange}
                     >
                       <option value="">Выберите тип</option>
-                      <option value="Физическое">Физическое</option>
-                      <option value="Юридическое">Юридическое</option>
+                      {clientTypes.map((type) => (
+                        <option key={type.id} value={type.name}>
+                          {type.name}
+                        </option>
+                      ))}
                     </select>
                     {errors.clientTypeName && <div className="field-error">{errors.clientTypeName}</div>}
                   </div>
@@ -220,42 +220,105 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
             <div className="info-group">
               <h3>Банковские реквизиты</h3>
               <div className="info-row">
-                <span className="label">Банк отправителя:</span>
+                <span className="label">Банк списания:</span>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    name="bankFromId"
-                    value={editedData.bankFromId}
+                  <select
+                    name="bankFromName"
+                    value={editedData.bankFromName || ''}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="">Выберите банк</option>
+                    {banks.map(bank => (
+                      <option key={bank.id} value={bank.id}>
+                        {bank.name} ({bank.bik})
+                      </option>
+                    ))}
+                  </select>
                 ) : (
-                  <span className="value">{transaction.bankFromId}</span>
+                  <span className="value">{editedData.bankFromName}</span>
                 )}
               </div>
               <div className="info-row">
-                <span className="label">Банк получателя:</span>
+                <span className="label">Счёт списания:</span>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    name="bankToId"
-                    value={editedData.bankToId}
-                    onChange={handleChange}
-                  />
+                  <>
+                    <input
+                      list="client-accounts"
+                      name="bankAccount"
+                      autoComplete="off"
+                      value={editedData.bankAccount?.bankAccount || ''}
+                      onChange={(e) => {
+                        const selected = clientAccounts.find(a => a.bankAccount === e.target.value);
+                        setEditedData(prev => ({
+                          ...prev,
+                          bankAccount: selected ? { ...selected } : { bankAccount: e.target.value }
+                        }));
+                      }}
+                    />
+                    <datalist id="client-accounts">
+                      {clientAccounts.map((acc, idx) => (
+                        <option key={idx} value={acc.bankAccount}>
+                          {acc.bankAccount} — {acc.bankName}
+                        </option>
+                      ))}
+                    </datalist>
+                  </>
                 ) : (
-                  <span className="value">{transaction.bankToId}</span>
+                  <span className="value">
+                    {transaction.bankAccount?.bankAccount} — {transaction.bankAccount?.bankName}
+                  </span>
                 )}
               </div>
               <div className="info-row">
-                <span className="label">Счет получателя:</span>
+                <span className="label">Банк зачисления:</span>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    name="bankRecipientAccount"
-                    value={editedData.bankRecipientAccount}
+                  <select
+                    name="bankToName"
+                    value={editedData.bankToName || ''}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="">Выберите банк</option>
+                    {banks.map(bank => (
+                      <option key={bank.id} value={bank.id}>
+                        {bank.name} ({bank.bik})
+                      </option>
+                    ))}
+                  </select>
                 ) : (
-                  <span className="value">{transaction.bankRecipientAccount}</span>
+                  <span className="value">{editedData.bankToName}</span>
+                )}
+              </div>
+              <div className="info-row">
+                <span className="label">Счёт списания:</span>
+                {isEditing ? (
+                  <>
+                    <input
+                      list="recipient-accounts"
+                      name="bankRecipientAccount"
+                      autoComplete="off"
+                      value={editedData.bankRecipientAccount || ''}
+                      onChange={(e) => {
+                        const selected = recipientAccounts.find(
+                          a => a.bankAccount === e.target.value
+                        );
+                        setEditedData(prev => ({
+                          ...prev,
+                          bankRecipientAccount: selected ? selected.bankAccount : e.target.value
+                        }));
+                      }}
+                    />
+                    <datalist id="recipient-accounts">
+                      {recipientAccounts.map((acc, idx) => (
+                        <option key={idx} value={acc.bankAccount}>
+                          {acc.bankAccount} — {acc.bankName}
+                        </option>
+                      ))}
+                    </datalist>
+                  </>
+                ) : (
+                  <span className="value">
+                    {transaction.bankRecipientAccount} — {transaction.bankName}
+                  </span>
                 )}
               </div>
             </div>

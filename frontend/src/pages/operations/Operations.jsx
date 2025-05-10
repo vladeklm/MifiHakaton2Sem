@@ -25,7 +25,57 @@ const Operations = () => {
     inn: ''
   });
   const [operationToDelete, setOperationToDelete] = useState(null);
+  const [banks, setBanks] = useState([]);
+
+  useEffect(() => {
+    operationsApi.getBanks()
+      .then(res => setBanks(res.data))
+      .catch(err => console.error('Ошибка при загрузке банков:', err));
+  }, []);
+
   const clientId = getUserId();
+
+  const [clientAccounts, setClientAccounts] = useState([]);
+  useEffect(() => {
+    const fetchClientAccounts = async () => {
+      try {
+        const res = await operationsApi.getClientAccounts(false);
+        setClientAccounts(res.data);
+      } catch (err) {
+        console.error('Ошибка при загрузке счетов клиента:', err);
+      }
+    };
+    fetchClientAccounts();
+  }, []);
+
+  const [recipientAccounts, setRecipientAccounts] = useState([]);
+  useEffect(() => {
+    const fetchRecipientAccounts = async () => {
+      try {
+        const res = await operationsApi.getClientAccounts(true);
+        setRecipientAccounts(res.data);
+      } catch (err) {
+        console.error('Ошибка при загрузке счетов контрагента:', err);
+      }
+    };
+    fetchRecipientAccounts();
+  }, []);
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    operationsApi.getCategories()
+      .then(res => setCategories(res.data))
+      .catch(err => console.error('Ошибка при загрузке категорий:', err));
+  }, []);
+
+  const [clientTypes, setClientTypes] = useState([]);
+
+  useEffect(() => {
+    operationsApi.getClientTypes()
+      .then(res => setClientTypes(res.data))
+      .catch(err => console.error('Ошибка при загрузке типов клиентов:', err));
+  }, []);
 
   useEffect(() => {
     const fetchOperations = async () => {
@@ -104,7 +154,7 @@ const Operations = () => {
       setError('Ошибка при удалении операции');
       console.error(err);
     } finally {
-      setOperationToDelete(null); // закрываем модалку
+      setOperationToDelete(null);
     }
   };
 
@@ -138,72 +188,32 @@ const Operations = () => {
   };
 
   const handleSave = async (updatedOperation) => {
-    const categoryMap = {
-      'Зарплата': 1,
-      'Пополнение счета': 2,
-      'Возврат средств': 3,
-      'Налоговый вычет': 4,
-      'Перевод между счетами': 5,
-      'Оплата услуг': 6,
-      'Кредитный платеж': 7,
-      'Налоговый платеж': 8
-    };
-  
-    const typeMap = {
-      'Поступление': 1,
-      'Списание': 2
-    };
-  
-    const statusMap = {
-      'Новая': 1,
-      'Подтвержденная': 2,
-      'В обработке': 3,
-      'Отменена': 4,
-      'Платеж выполнен': 5,
-      'Платеж удален': 6,
-      'Возврат': 7
-    };
-  
-    const clientTypeMap = {
-      'Физическое': 1,
-      'Юридическое': 2
-    };
-
-    const bankMap = {
-      'Альфа': 1,
-      'Сбербанк': 2,
-      'Тинькофф': 3
-    };
-  
     try {
       const operationToSave = {
-        client: {
-          user: {
-            id: updatedOperation.client?.user?.id || updatedOperation.clientUserId || 1
-          }
-        },
-        operationType: { id: typeMap[updatedOperation.operationTypeName] },
-        operationCategory: { id: categoryMap[updatedOperation.operationCategoryName] },
-        operationStatus: { id: statusMap[updatedOperation.operationStatusName] },
-        clientType: { id: clientTypeMap[updatedOperation.clientTypeName] },
-        dateTimeOperation: updatedOperation.dateTimeOperation,
-        amount: Number(updatedOperation.amount),
-        comment: updatedOperation.comment,
-        phoneNumber: updatedOperation.phoneNumber.replace(/\D/g, ''),
-        inn: updatedOperation.inn,
-        bankFromId: bankMap[updatedOperation.bankFromId],
-        bankToId: bankMap[updatedOperation.bankToId],
-        bankRecipientAccount: updatedOperation.bankRecipientAccount,
-        bankAccount: {id: 1} // TODO: Подставить счет клиента 
+        bankFromName: updatedOperation.bankFromName || '',
+        bankToName: updatedOperation.bankToName || '',
+        bankRecipientAccountNumber: updatedOperation.bankRecipientAccount || '',
+        bankaccountNumber: updatedOperation.bankAccount || '',
+        clientTypeName: updatedOperation.clientTypeName || '',
+        operationStatusName: updatedOperation.operationStatusName || '',
+        inn: updatedOperation.inn || '',
+        amount: Number(updatedOperation.amount || 0),
+        phoneNumber: updatedOperation.phoneNumber?.replace(/\D/g, '') || '',
+        operationTypeName: updatedOperation.operationTypeName || '',
+        operationCategoryName: updatedOperation.operationCategoryName || '',
+        comment: updatedOperation.comment || '',
+        statusName: updatedOperation.statusName || '',
+        dateTimeOperation: updatedOperation.dateTimeOperation
       };
-
+  
       console.log('Отправляется в API:', JSON.stringify(operationToSave, null, 2));
-
+  
       if (updatedOperation.id) {
         await operationsApi.updateOperation(updatedOperation.id, operationToSave);
       } else {
         await operationsApi.createOperation(operationToSave);
       }
+  
       setSelectedOperation(null);
       const response = await operationsApi.getOperations(clientId);
       setOperations(response.data.content);
@@ -327,6 +337,11 @@ const Operations = () => {
           onClose={() => setSelectedOperation(null)}
           onSave={handleSave}
           isEditingInitial={!selectedOperation.id}
+          banks={banks}
+          clientAccounts={clientAccounts}
+          recipientAccounts={recipientAccounts}
+          categories={categories}
+          clientTypes={clientTypes}
         />
       )}
 

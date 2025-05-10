@@ -230,3 +230,8 @@
     position: static;
   }
 }
+
+input[list]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  appearance: none;
+}
