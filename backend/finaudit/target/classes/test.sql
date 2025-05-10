@@ -25,7 +25,6 @@ INSERT INTO operation_categories (id, name,is_actual) VALUES
                                                           (7, 'Кредитный платеж',true),
                                                           (8, 'Налоговый платеж',true);
 
-
 -- Вставка пользователей с created_at и updated_at, password = password1234
 INSERT INTO users (login, password, role, created_at, updated_at)
 VALUES
@@ -44,6 +43,22 @@ VALUES
     (4, 'компания', 'АО "Технологии', NOW(), NOW()),
     (5, 'компания', 'ЗАО "Тучка"', NOW(), NOW());
 
+INSERT INTO banks (id, bik, created_at, name, updated_at) VALUES
+                                                  (1, '421949835', NOW(), 'Сбербанк', NOW()),
+                                                  (2, '423213214', NOW(), 'Альфабанк', NOW()),
+												   (3, '443411111', NOW(), 'Газпром Банк', NOW()),
+												   (4, '400000005', NOW(), 'Почта Банк', NOW()),
+												   (5, '443244213', NOW(), 'МТС-банк', NOW());
+
+INSERT INTO bank_accounts (id, created_at, number, updated_at, bank_id, client_id) VALUES
+                                                  (1, NOW(), '3123213123213', NOW(), 1, 2),
+                                                  (2, NOW(), '3234231231153', NOW(), 2, 4),
+												   (3, NOW(), '3222222222273', NOW(), 2, 3),
+                                                  (4, NOW(), '3234231231123', NOW(), 1, 6),
+												   (5, NOW(), '4424444442229', NOW(), 3, 1),
+                                                  (6, NOW(), '2213213344229', NOW(), 4, 5);
+
+ALTER TABLE bank_accounts ALTER COLUMN client_id DROP NOT NULL;
 -- Вставка операций поступления с created_at и updated_at (случайные даты в пределах 2 лет)
 WITH categories AS (
     SELECT

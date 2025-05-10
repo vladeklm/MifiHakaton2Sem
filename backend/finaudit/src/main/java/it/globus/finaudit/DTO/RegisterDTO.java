@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationDTO {
+public class RegisterDTO {
 
     @NotBlank(message = "Логин не может быть пустым")
     @Size(min = 3, max = 50, message = "Логин должен быть от 3 до 50 символов")
@@ -28,7 +28,6 @@ public class AuthenticationDTO {
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов")
     private String firstName;
 
-    @Size(min = 2, max = 50, message = "Отчество должно быть от 2 до 50 символов")
     private String patronymic;
 
     @NotBlank(message = "Фамилия не может быть пустой")

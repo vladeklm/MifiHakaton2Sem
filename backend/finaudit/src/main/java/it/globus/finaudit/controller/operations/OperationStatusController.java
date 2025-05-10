@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transaction-statuses")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/v1/transaction-statuses")
 @RequiredArgsConstructor
 public class OperationStatusController {
     private final OperationStatusService service;

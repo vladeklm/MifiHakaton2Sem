@@ -60,14 +60,17 @@ public class Operation {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    @Column(name = "bank_from_id")
-    private Long bankFromId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "bank_from_id")
+    private Bank bankFrom;
 
-    @Column(name = "bank_to_id")
-    private Long bankToId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "bank_to_id")
+    private Bank bankTo;
 
-    @Column(name = "bank_recipient_account_id")
-    private Long bankRecipientAccountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_recipient_account_id")
+    private BankAccount bankRecipientAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_account_id")

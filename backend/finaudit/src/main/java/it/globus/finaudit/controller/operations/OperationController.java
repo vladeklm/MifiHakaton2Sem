@@ -20,26 +20,26 @@ public class OperationController {
     private final OperationService service;
 
     @PostMapping
-    public ResponseEntity<String> createOperation(@RequestBody Operation operation) {
-        return service.createOperation(operation);
+    public ResponseEntity<?> createOperation(@RequestBody OperationDTO dto) {
+        return service.createOperation(dto);
     }
 
     @GetMapping
-    public Page<OperationDTO> getOperationList(
+    public Page<OperationDTO> getOperationsByClientId(
             @RequestParam Long clientId,
             Pageable pageable
     ) {
-        return service.getOperationList(clientId, pageable);
+        return service.getOperationsByClientId(clientId, pageable);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OperationDTO> getOperation(@PathVariable Long id) {
-        return service.getOperation(id);
+    public ResponseEntity<?> getOperationById(@PathVariable Long id) {
+        return service.getOperationById(id);
     }
 
     @PutMapping("/change_data/{id}")
-    public ResponseEntity<String> updateDataOperation(@RequestBody OperationDTO dto, @PathVariable Long id) {
-        return service.updateDataOperation(dto, id);
+    public ResponseEntity<String> updateDataOperation(@RequestBody Operation operation, @PathVariable Long id) {
+        return service.updateDataOperation(operation, id);
     }
 
 }

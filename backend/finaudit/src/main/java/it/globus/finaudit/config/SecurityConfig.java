@@ -28,7 +28,18 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final JwtAuthFilter jwtFilter;
-
+    private static final String[] WHITE_LIST_URL = {
+            "/api/v1/auth/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/api-docs",
+            "/api-docs/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/webjars/**"
+    };
     @Autowired
     public SecurityConfig(JwtAuthFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -38,8 +49,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/auth/**").permitAll()
+                        .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

@@ -4,13 +4,16 @@ package it.globus.finaudit.service.report;
 import it.globus.finaudit.DTO.OperationFilter;
 import it.globus.finaudit.entity.Operation;
 import it.globus.finaudit.repository.OperationRepository;
+import it.globus.finaudit.repository.OperationTypeRepository;
 import it.globus.finaudit.service.report.representation.AmountByCategory;
 import it.globus.finaudit.service.report.representation.NumberOperationsForPeriod;
 import it.globus.finaudit.service.report.representation.OperationForJasper;
 import it.globus.finaudit.specification.OperationSpecificationBuilder;
+import it.globus.finaudit.util.report.RepresentationHelper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +29,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static it.globus.finaudit.util.report.DateHelper.*;
-import static it.globus.finaudit.util.report.RepresentationHelper.getFilterDisplay;
-import static it.globus.finaudit.util.report.RepresentationHelper.mapOperationForJasper;
 
 
 @Component
@@ -35,19 +36,25 @@ import static it.globus.finaudit.util.report.RepresentationHelper.mapOperationFo
 public abstract class AbstractReportGenerator implements ReportGenerator {
     private final OperationRepository operationRepository;
     private final ReportTemplate reportTemplate;
+    private final OperationTypeRepository operationTypeRepository;
+    @Autowired
+    private RepresentationHelper representationHelper;
 
 
-    public AbstractReportGenerator(OperationRepository operationRepository, ReportTemplate reportTemplate) {
+    public AbstractReportGenerator(OperationRepository operationRepository, ReportTemplate reportTemplate,
+                                   OperationTypeRepository operationTypeRepository) {
         this.operationRepository = operationRepository;
         this.reportTemplate = reportTemplate;
+        this.operationTypeRepository = operationTypeRepository;
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public byte[] generateGeneralReport(OperationFilter filter, Long userId) {
         Specification<Operation> criteria = OperationSpecificationBuilder.buildFromFilterAndUserId(filter, userId);
         List<Operation> operations = operationRepository.findAll(criteria);
-        List<OperationForJasper> operationForJasper = mapOperationForJasper(operations);
+        List<OperationForJasper> operationForJasper = representationHelper.mapOperationForJasper(operations);
         log.trace("Generating report for {} operations", operationForJasper.size());
         JasperReport jasperReport = reportTemplate.getGeneralReport();
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(operationForJasper);
@@ -55,14 +62,14 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
         parameters.put("REPORT_TITLE", "Отчет по операциям");
         parameters.put("GENERATION_DATE",
                 LocalDateTime.now().format(dateAndTimeFormat));
-        parameters.put("OPERATION_FILTER", getFilterDisplay(filter));
+        parameters.put("OPERATION_FILTER", representationHelper.getFilterDisplay(filter));
         return generateReport(jasperReport, parameters, dataSource);
     }
 
     @Override
     @Transactional(readOnly = true)
     public byte[] generatePieChartIncome(OperationFilter filter, Long userId) {
-        filter.setOperationType("Поступление");
+        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").get().getId());
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График поступлений");
         return generatePieChart(filter, parameters, userId);
@@ -71,7 +78,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     @Override
     @Transactional(readOnly = true)
     public byte[] generatePieChartWithdraw(OperationFilter filter, Long userId) {
-        filter.setOperationType("Списание");
+        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").get().getId());
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График списаний");
         return generatePieChart(filter, parameters, userId);
@@ -81,21 +88,21 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     public byte[] generateWeeklyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Недельная динамика операций",
                 op -> op.getDateTimeOperation().toLocalDate().format(dateFormat),
-                generatingAllDaysOfWeek(filter.getDateFrom(), filter.getDateTo()),userId);
+                generatingAllDaysOfWeek(filter.getDateFrom(), filter.getDateTo()), userId);
     }
 
     @Override
     public byte[] generateMonthlyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Месячная динамика операций",
                 op -> op.getDateTimeOperation().toLocalDate().format(dateFormat),
-                generatingAllWeeksOfMonth(filter.getDateFrom(), filter.getDateTo()),userId);
+                generatingAllWeeksOfMonth(filter.getDateFrom(), filter.getDateTo()), userId);
     }
 
     @Override
     public byte[] generateQuarterlyDynamicsOperationsReport(OperationFilter filter, Long userId) {
         return generateDynamicsReport(filter, "Квартальная динамика операций",
                 op -> op.getDateTimeOperation().format(monthFormat),
-                generatingAllMonthOfQuarter(filter.getDateFrom(), filter.getDateTo()),userId);
+                generatingAllMonthOfQuarter(filter.getDateFrom(), filter.getDateTo()), userId);
     }
 
     @Override
