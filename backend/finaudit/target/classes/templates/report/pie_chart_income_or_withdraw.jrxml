@@ -1,0 +1,45 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="periodDashboard" language="java" columnCount="1" pageWidth="595" pageHeight="400" orientation="Landscape" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8f497d52-0ab4-40a9-ac43-4779046d9ff0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<dataset name="Dataset1" uuid="422ea008-748d-450f-aa98-3122dc6d85fa">
+		<field name="nameCategory" class="java.lang.String"/>
+		<field name="amount" class="java.math.BigDecimal"/>
+	</dataset>
+	<parameter name="CATEGORY_AMOUNT" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="CHART_TITLE" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<detail>
+		<band height="350" splitType="Stretch">
+			<element kind="chart" chartType="pie3D" uuid="e6b70082-cf7f-4e21-96f8-1073df810fa2" x="0" y="0" width="560" height="350" linkTarget="Self" renderType="draw" theme="default">
+				<titleFont fontName="Arial" fontSize="14.0"/>
+				<legendFont fontName="Arial"/>
+				<titleExpression><![CDATA[$P{CHART_TITLE}]]></titleExpression>
+				<dataset kind="pie" maxCount="10">
+					<datasetRun uuid="d6df8af5-0c32-4360-948d-6b596f52a54d" subDataset="Dataset1">
+						<dataSourceExpression><![CDATA[$P{CATEGORY_AMOUNT}]]></dataSourceExpression>
+					</datasetRun>
+					<otherSectionHyperlink linkType="None" linkTarget="Self"/>
+					<series>
+						<keyExpression><![CDATA[$F{nameCategory}]]></keyExpression>
+						<valueExpression><![CDATA[$F{amount}]]></valueExpression>
+						<labelExpression><![CDATA[$F{amount}.toString()]]></labelExpression>
+						<sectionHyperlink linkTarget="Self"/>
+					</series>
+				</dataset>
+				<plot>
+					<itemLabel/>
+				</plot>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+</jasperReport>
