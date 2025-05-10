@@ -69,7 +69,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     @Override
     @Transactional(readOnly = true)
     public byte[] generatePieChartIncome(OperationFilter filter, Long userId) {
-        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").getId());
+        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").get().getId());
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График поступлений");
         return generatePieChart(filter, parameters, userId);
@@ -78,7 +78,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     @Override
     @Transactional(readOnly = true)
     public byte[] generatePieChartWithdraw(OperationFilter filter, Long userId) {
-        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").getId());
+        filter.setOperationTypeId(operationTypeRepository.findByName("Поступление").get().getId());
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CHART_TITLE", "График списаний");
         return generatePieChart(filter, parameters, userId);

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface OperationStatusRepository extends JpaRepository<OperationStatus, Long> {
-    Optional<Object> findByName(String statusCode);
+    Optional<OperationStatus> findByName(String statusCode);
 }

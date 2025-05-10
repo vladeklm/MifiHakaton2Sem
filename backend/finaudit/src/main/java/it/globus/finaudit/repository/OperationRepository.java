@@ -19,9 +19,10 @@ public interface OperationRepository extends JpaRepository<Operation, Long> , Jp
     List<Operation> findAll(Specification<Operation> spec);
 
     Page<Operation> findAllByClient_User_Id(Long userId, Pageable pageable);
+
     @Query("SELECT new it.globus.finaudit.DTO.AccountInfoDTO(ba.number, ba.bank.name, COUNT(o.id)) " +
             "FROM Operation o " +
-            "LEFT JOIN BankAccount ba ON (:isContragentAccount = true AND ba.id = o.bankRecipientAccountId) OR " +
+            "LEFT JOIN BankAccount ba ON (:isContragentAccount = true AND ba.id = o.bankRecipientAccount.id) OR " +
             "(:isContragentAccount = false AND ba.id = o.bankAccount.id) " +
             "WHERE o.client.id = :clientId " +
             "GROUP BY ba.number, ba.bank.name " +

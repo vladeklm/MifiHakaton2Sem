@@ -80,16 +80,16 @@ public class OperationService {
         Client client = clientRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
 
-        OperationCategory operationCategory = (OperationCategory) operationCategoryRepository.findByName(dto.getOperationCategoryName())
+        OperationCategory operationCategory = operationCategoryRepository.findByName(dto.getOperationCategoryName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationCategory not found"));
 
-        OperationType operationType = (OperationType) operationTypeRepository.findByName(dto.getOperationTypeName())
+        OperationType operationType = operationTypeRepository.findByName(dto.getOperationTypeName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationType not found"));
 
-        OperationStatus operationStatus = (OperationStatus) operationStatusRepository.findByName(dto.getStatusName())
+        OperationStatus operationStatus = operationStatusRepository.findByName(dto.getStatusName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationStatus not found"));
 
-        ClientType clientType = (ClientType) clientTypeRepository.findByName(dto.getClientTypeName())
+        ClientType clientType = clientTypeRepository.findByName(dto.getClientTypeName())
                 .orElseThrow(() -> new EntityNotFoundException("ClientType not found"));
 
         boolean isIncoming = operationType.getName().equalsIgnoreCase("Поступление");
@@ -97,11 +97,11 @@ public class OperationService {
         Bank bankFrom = null;
 
         if (!isIncoming) {
-            bankFrom = (Bank) bankRepository.findByName(dto.getBankFromName())
+            bankFrom = bankRepository.findByName(dto.getBankFromName())
                     .orElseThrow(() -> new EntityNotFoundException("Bank From not found"));
         }
 
-        Bank bankTo = (Bank) bankRepository.findByName(dto.getBankToName())
+        Bank bankTo = bankRepository.findByName(dto.getBankToName())
                 .orElseThrow(() -> new EntityNotFoundException("Bank To not found"));
 
         Bank mainBank = isIncoming ? bankTo : bankFrom;

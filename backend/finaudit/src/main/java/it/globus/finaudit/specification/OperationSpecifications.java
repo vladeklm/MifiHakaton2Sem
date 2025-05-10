@@ -15,12 +15,12 @@ public class OperationSpecifications {
 
     public static Specification<Operation> equalsBankFromId(Long bankFromId) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("bankFromId"), bankFromId);
+                criteriaBuilder.equal(root.get("bankFrom").get("id"), bankFromId);
     }
 
     public static Specification<Operation> equalsBankToId(Long bankToId) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("bankToId"), bankToId);
+                criteriaBuilder.equal(root.get("bankFrom").get("id"), bankToId);
     }
 
     public static Specification<Operation> betweenDate(LocalDate dateFrom, LocalDate dateTo) {
