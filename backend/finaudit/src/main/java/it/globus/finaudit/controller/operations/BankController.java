@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/banks")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/v1/banks")
 @RequiredArgsConstructor
 public class BankController {
     private final BankService service;
