@@ -86,7 +86,7 @@ public class OperationService {
         OperationType operationType = operationTypeRepository.findByName(dto.getOperationTypeName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationType not found"));
 
-        OperationStatus operationStatus = operationStatusRepository.findByName(dto.getStatusName())
+        OperationStatus operationStatus = operationStatusRepository.findByName(dto.getOperationStatusName())
                 .orElseThrow(() -> new EntityNotFoundException("OperationStatus not found"));
 
         ClientType clientType = clientTypeRepository.findByName(dto.getClientTypeName())
