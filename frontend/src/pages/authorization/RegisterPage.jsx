@@ -6,6 +6,9 @@ import './LoginPage.css';
 const RegisterPage = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [patronymic, setPatronymic] = useState('');
+  const [secondName, setSecondName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -14,7 +17,7 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
     try {
-      await register(login, password);
+      await register(login, password, firstName, patronymic, secondName);
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
@@ -29,6 +32,26 @@ const RegisterPage = () => {
         <div className="login-form-section">
           <h2>Регистрация</h2>
           <form onSubmit={handleSubmit}>
+          <input
+              type="text"
+              placeholder="Имя"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Фамилия"
+              value={secondName}
+              onChange={(e) => setSecondName(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Отчество (необязательно)"
+              value={patronymic}
+              onChange={(e) => setPatronymic(e.target.value)}
+            />
             <input
               type="text"
               placeholder="Логин"

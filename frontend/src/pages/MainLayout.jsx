@@ -10,12 +10,13 @@ const menuItems = [
   { id: "settings", label: "Настройки", path: "/settings" },
 ];
 
-const MainLayout = () => {
+const MainLayout = ({ setIsAuthenticated }) => {
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    setIsAuthenticated(false);
     navigate("/login");
   };
 

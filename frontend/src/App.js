@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import MainLayout from './components/MainLayout';
+import MainLayout from './pages/MainLayout';
 import LoginPage from './pages/authorization/LoginPage';
 import RegisterPage from './pages/authorization/RegisterPage';
-import Operations from './components/operations/Operations';
-import Dashboard from './pages/Dashboard'
+import Reports from './pages/reports/Reports';
+import Operations from './pages/operations/Operations';
+import Dashboard from './pages/dashboard/Dashboard'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -20,16 +21,28 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <LoginPage setIsAuthenticated={setIsAuthenticated} />
+          )
+        } />
         <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/"
-          element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" />}
+          element={
+            isAuthenticated ? (
+              <MainLayout setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         >
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="operations" element={<Operations />} />
-          {/* можно добавить остальные вкладки */}
           <Route index element={<Navigate to="dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/operations" element={<Operations />} />
+          <Route path="/reports" element={<Reports />} />
         </Route>
       </Routes>
     </Router>
