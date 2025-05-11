@@ -30,23 +30,21 @@ public class OperationDTO {
 
     private String operationStatusName;
 
-    @Pattern(regexp = "\\d{11}", message = "ИНН должен содержать только 11 цифр")
-    private String inn;
+    private String operationTypeName;
 
-    private BigDecimal amount;
+    private String operationCategoryName;
 
     @Pattern(regexp = "^(8|\\+7)\\d{10}$",
             message = "Телефон должен начинаться с 8 или +7 и содержать 11 цифр (например: 89991234567 или +79991234567)")
     private String phoneNumber;
 
-    private String operationTypeName;
+    @Pattern(regexp = "\\d{11}", message = "ИНН должен содержать только 11 цифр")
+    private String inn;
 
-    private String operationCategoryName;
+    private BigDecimal amount;
 
     @Size(max = 500, message = "Комментарий не должен превышать 500 символов")
     private String comment;
-
-    private String statusName;
 
     private LocalDateTime dateTimeOperation;
 }

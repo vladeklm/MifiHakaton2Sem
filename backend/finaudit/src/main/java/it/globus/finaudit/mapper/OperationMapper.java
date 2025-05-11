@@ -19,7 +19,6 @@ public interface OperationMapper {
     @Mapping(source = "clientType.name", target = "clientTypeName")
     @Mapping(source = "bankAccount.number", target = "bankAccountNumber")
     @Mapping(source = "bankRecipientAccount.number", target = "bankRecipientAccountNumber")
-    @Mapping(target = "statusName", source = "operationStatus.name")
     @Mapping(target = "bankFromName", source = "bankFrom.name")
     @Mapping(target = "bankToName", source = "bankTo.name")
     OperationDTO toDto(Operation operation);
@@ -27,7 +26,7 @@ public interface OperationMapper {
     // To Entity
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "operationType", source = "operationTypeName", qualifiedByName = "codeToType")
-    @Mapping(target = "operationStatus", source = "statusName", qualifiedByName = "codeToStatus")
+    @Mapping(target = "operationStatus", source = "operationStatusName", qualifiedByName = "codeToStatus")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Operation toEntity(OperationDTO dto);
