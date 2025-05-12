@@ -193,7 +193,7 @@ const Operations = () => {
         bankFromName: updatedOperation.bankFromName || '',
         bankToName: updatedOperation.bankToName || '',
         bankRecipientAccountNumber: updatedOperation.bankRecipientAccount || '',
-        bankaccountNumber: updatedOperation.bankAccount || '',
+        bankAccountNumber: updatedOperation.bankAccount || '',
         clientTypeName: updatedOperation.clientTypeName || '',
         operationStatusName: updatedOperation.operationStatusName || '',
         inn: updatedOperation.inn || '',
@@ -205,15 +205,15 @@ const Operations = () => {
         statusName: updatedOperation.statusName || '',
         dateTimeOperation: updatedOperation.dateTimeOperation
       };
-  
+
       console.log('Отправляется в API:', JSON.stringify(operationToSave, null, 2));
-  
+
       if (updatedOperation.id) {
         await operationsApi.updateOperation(updatedOperation.id, operationToSave);
       } else {
         await operationsApi.createOperation(operationToSave);
       }
-  
+
       setSelectedOperation(null);
       const response = await operationsApi.getOperations(clientId);
       setOperations(response.data.content);
@@ -246,7 +246,7 @@ const Operations = () => {
       {error && <div className="error-message">{error}</div>}
       {loading && <div className="loading">Загрузка...</div>}
 
-      <FilterPanel 
+      <FilterPanel
         onApplyFilters={handleApplyFilters}
         onResetFilters={handleResetFilters}
         onAddTransaction={handleAddTransaction}
@@ -284,7 +284,7 @@ const Operations = () => {
                 <td>{op.clientTypeName}</td>
                 <td className="actions">
                   {op.operationStatusName === 'Новая' && (
-                    <button 
+                    <button
                       className="edit-btn"
                       onClick={() => handleEdit(op.id)}
                       title="Редактировать"
@@ -293,7 +293,7 @@ const Operations = () => {
                     </button>
                   )}
                   {op.operationStatusName === 'Новая' && (
-                    <button 
+                    <button
                       className="delete-btn"
                       onClick={() => handleDelete(op.id)}
                       title="Удалить"
@@ -301,7 +301,7 @@ const Operations = () => {
                       ✕
                     </button>
                   )}
-                  <button 
+                  <button
                     className="details-btn"
                     onClick={() => handleDetails(op.id)}
                     title="Подробнее"
@@ -316,14 +316,14 @@ const Operations = () => {
       </div>
 
       <div className="pagination">
-        <button 
+        <button
           onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
           disabled={currentPage === 0}
         >
           Назад
         </button>
         <span>Страница {currentPage + 1} из {totalPages}</span>
-        <button 
+        <button
           onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
           disabled={currentPage === totalPages - 1 || totalPages === 0}
         >

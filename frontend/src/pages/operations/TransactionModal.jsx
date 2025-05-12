@@ -129,6 +129,8 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                 </span>
               </div>
 
+
+
               <div className="info-row">
                 <span className="label">Категория:<span style={{ color: 'red' }}>*</span></span>
                 {isEditing ? (
@@ -206,7 +208,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                 <span className="label">Телефон:</span>
                 {isEditing ? (
                   <InputMask
-                    mask="+7 (999) 999-99-99"
+                    mask="8 (999) 999-99-99"
                     value={editedData.phoneNumber}
                     onChange={(e) => setEditedData(prev => ({ ...prev, phoneNumber: e.target.value }))}
                   >
@@ -247,12 +249,12 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                       list="client-accounts"
                       name="bankAccount"
                       autoComplete="off"
-                      value={editedData.bankAccount?.bankAccount || ''}
+                      value={editedData.bankAccount || ''}
                       onChange={(e) => {
                         const selected = clientAccounts.find(a => a.bankAccount === e.target.value);
                         setEditedData(prev => ({
                           ...prev,
-                          bankAccount: selected ? { ...selected } : { bankAccount: e.target.value }
+                          bankAccount: selected ? selected.bankAccount : e.target.value
                         }));
                       }}
                     />
@@ -266,7 +268,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                   </>
                 ) : (
                   <span className="value">
-                    {transaction.bankAccount?.bankAccount} — {transaction.bankAccount?.bankName}
+                    {transaction.bankAccount} — {transaction.bankName}
                   </span>
                 )}
               </div>

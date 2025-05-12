@@ -19,13 +19,13 @@ export const operationsApi = {
   updateOperation: (id, operation) =>
     api.put(`/operations/change_data/${id}`, operation),
 
-  getClientTypes: () => 
+  getClientTypes: () =>
     api.get('/operations/Client-types'),
-  
-  getStatuses: () => 
-    api.get('/api/transaction-types'),
 
-  getBanks: () => 
+  getStatuses: () =>
+    api.get('/transaction-types'),
+
+  getBanks: () =>
     api.get('/banks'),
 
   getClientAccounts: (isContragentAccount) =>
@@ -34,4 +34,5 @@ export const operationsApi = {
     }),
 
   getCategories: () => api.get('/categories')
+  //getOperationTypes: () => api.get('/')
 };
