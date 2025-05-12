@@ -42,6 +42,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("Name: " + name + " Value: " + value);
     setEditedData(prev => ({
       ...prev,
       [name]: value
@@ -229,7 +230,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                   >
                     <option value="">Выберите банк</option>
                     {banks.map(bank => (
-                      <option key={bank.id} value={bank.id}>
+                      <option key={bank.id} value={bank.name}>
                         {bank.name} ({bank.bik})
                       </option>
                     ))}
@@ -279,7 +280,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
                   >
                     <option value="">Выберите банк</option>
                     {banks.map(bank => (
-                      <option key={bank.id} value={bank.id}>
+                      <option key={bank.id} value={bank.name}>
                         {bank.name} ({bank.bik})
                       </option>
                     ))}
@@ -344,7 +345,7 @@ const TransactionModal = ({ transaction, onClose, onSave, isEditingInitial = fal
 
         <div className="modal-footer">
           {transaction.operationStatusName === 'Новая' && (
-            <button 
+            <button
               className={`edit-button ${isEditing ? 'save' : ''}`}
               onClick={handleEdit}
             >

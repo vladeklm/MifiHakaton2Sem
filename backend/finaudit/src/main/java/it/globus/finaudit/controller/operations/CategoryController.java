@@ -19,8 +19,8 @@ public class CategoryController {
         return service.getAll();
     }
 
-    @GetMapping("/by-type/{type}")
+    /*@GetMapping("/by-type/{type}")
     public List<CategoryDTO> getByType(@PathVariable String type) {
         return service.getByType(type);
-    }
+    }*/
 }
